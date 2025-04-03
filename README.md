@@ -29,5 +29,5 @@ Run this command in the project folder to install all dependencies:
 
 👥 Team Members
 
-Gurpreet Singh
-[Add teammates here]
+Oake Soe, Mozie Najee, Gurpreet Singh
+
