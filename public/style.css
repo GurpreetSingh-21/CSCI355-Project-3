@@ -1,0 +1,27 @@
+/* public/style.css */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  .container {
+    text-align: center;
+    max-width: 400px;
+  }
+  
+  button {
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+  }
+  
+  #options button {
+    display: block;
+    margin: 5px auto;
+    width: 80%;
+  }
+  
