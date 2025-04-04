@@ -25,3 +25,12 @@ body {
     width: 80%;
   }
   
+  .add-red {
+    background-color: red;
+    color: black;
+  }
+
+  .add-green {
+    background-color: green;
+    color: black;
+  }
