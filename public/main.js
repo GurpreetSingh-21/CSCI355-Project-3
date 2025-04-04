@@ -1,6 +1,7 @@
-let currentQuestionIndex = 0;
 let score = 0;
 let questions = [];
+let numberOfQuestions = 0;
+let randomIndex = -1;
 
 // ========== INDEX PAGE ==========
 if (window.location.pathname === '/' || window.location.pathname.includes('index.html')) {
@@ -26,7 +27,10 @@ if (window.location.pathname.includes('quiz.html')) {
   });
   
   function showQuestion() {
-    const question = questions[currentQuestionIndex];
+    randomIndex = Math.floor(Math.random() * questions.length);
+    const question = questions[randomIndex];
+    numberOfQuestions++;
+
     if (!question) return;
 
     document.getElementById('question').textContent = question.question;
@@ -37,27 +41,26 @@ if (window.location.pathname.includes('quiz.html')) {
     document.getElementById('next').style.display = 'none';
   }
 
-  function checkAnswer(selectedAnswer) {
-    const question = questions[currentQuestionIndex];
-    if (selectedAnswer === question.answer) {
+  document.getElementById('A').addEventListener('click', () => checkAnswer('A', randomIndex));
+  document.getElementById('B').addEventListener('click', () => checkAnswer('B', randomIndex));
+  document.getElementById('C').addEventListener('click', () => checkAnswer('C', randomIndex));
+  document.getElementById('D').addEventListener('click', () => checkAnswer('D', randomIndex));
+
+  function checkAnswer(selectedAnswer, index) {
+    const chosenQuestion = questions[index];
+    if (selectedAnswer == chosenQuestion.answer) {
       score++;
     }
     document.getElementById('next').style.display = 'inline';
   }
 
-  document.getElementById('A').addEventListener('click', () => checkAnswer('A'));
-  document.getElementById('B').addEventListener('click', () => checkAnswer('B'));
-  document.getElementById('C').addEventListener('click', () => checkAnswer('C'));
-  document.getElementById('D').addEventListener('click', () => checkAnswer('D'));
-
   document.getElementById('next').addEventListener('click', () => {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
+    if (numberOfQuestions < 10) {
       showQuestion();
     } else {
       // Save score in localStorage for results page
       localStorage.setItem('score', score);
-      localStorage.setItem('total', questions.length);
+      localStorage.setItem('total', numberOfQuestions);
       window.location.href = '/results.html';
     }
   });
@@ -77,7 +80,8 @@ if (window.location.pathname.includes('results.html')) {
 
   if (restartBtn) {
     restartBtn.addEventListener('click', () => {
-      currentQuestionIndex = 0;
+      numberOfQuestions = 0;
+      randomIndex = -1;
       score = 0;
       localStorage.removeItem('score');
       localStorage.removeItem('total');
