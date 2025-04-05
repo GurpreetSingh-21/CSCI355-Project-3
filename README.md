@@ -1,13 +1,13 @@
 <br/>
  CSCI355-Project-2 – Quiz App
 <br/>
-<br/>A simple web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
+<br/>A simple web-based quiz app built using HTML, CSS, JavaScript, and Node.js with Express.
 <br/>
 
 ## 🚀 How to Run the Project
 
 ### 1. Install Node.js  
-Make sure Node.js is installed on your system. [Download here](https://nodejs.org/)
+Make sure Node.js is installed on your system
 
 ### 2. Install Dependencies  
 Run this command in the project folder to install all dependencies:
