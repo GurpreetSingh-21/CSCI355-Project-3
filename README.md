@@ -1,6 +1,8 @@
+<br/>
 # CSCI355-Project-2 – Quiz App
-
-A simple web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
+<br/>
+<br/>A simple web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
+<br/>
 
 ## 🚀 How to Run the Project
 
@@ -19,6 +21,8 @@ Run this command in the project folder to install all dependencies:
 ### Then open your browser and go to:
 - http://localhost:3000
 
+<br/>
+<br/>
 
 ### ✨ Features
 
@@ -29,22 +33,25 @@ Run this command in the project folder to install all dependencies:
 - 🎨 Dark & Light Mode Toggle (with localStorage memory)
 - 📱 Fully Responsive design (mobile, tablet, desktop)
 - 🧠 Animated UI – transitions, popups, confetti, effects
+<br/>
+<br/>
 
-
-📁 Tech Stack
+### 📁 Tech Stack
 
 Frontend: HTML, CSS (Custom + Animations), Vanilla JavaScript
 Backend: Node.js + Express
 Data Storage: JSON (for questions), localStorage (for score/session)
+<br/>
+<br/>
 
-📌 Notes
+### 📌 Notes
 
 - Quiz questions are loaded from questions.json
 - Score is stored using localStorage and shown on the results page
 - You do not need to restart the server manually if using npm run dev
+<br/>
 
-
-👥 Team Members
+### 👥 Team Members
 
 Oake Soe, Mozie Najee, Gurpreet Singh, Prashanna Bhandari
 
