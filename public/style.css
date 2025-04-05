@@ -25,12 +25,12 @@ body {
     width: 80%;
   }
   
-  .add-red {
-    background-color: red;
+  .correct {
+    background-color: green;
     color: black;
   }
 
-  .add-green {
-    background-color: green;
+  .incorrect {
+    background-color: red;
     color: black;
   }
