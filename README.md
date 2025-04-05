@@ -20,6 +20,23 @@ Run this command in the project folder to install all dependencies:
 - http://localhost:3000
 
 
+### ✨ Features
+
+- ✅ Random 10 Questions per quiz
+- ⏱️ Countdown Timer per question (30s)
+- ✅ ❌ Answer Feedback – green for correct, red for incorrect
+- 📈 Progress Bar + “Question x of 10” indicator
+- 🎨 Dark & Light Mode Toggle (with localStorage memory)
+- 📱 Fully Responsive design (mobile, tablet, desktop)
+- 🧠 Animated UI – transitions, popups, confetti, effects
+
+
+📁 Tech Stack
+
+Frontend: HTML, CSS (Custom + Animations), Vanilla JavaScript
+Backend: Node.js + Express
+Data Storage: JSON (for questions), localStorage (for score/session)
+
 📌 Notes
 
 - Quiz questions are loaded from questions.json
