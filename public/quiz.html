@@ -7,9 +7,20 @@
   <title>Quiz</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="light-mode">
+
+
+  <div class="mode-toggle">
+    <label class="switch">
+      <input type="checkbox" id="modeSwitch" />
+      <span class="slider round">
+        <span class="sun">☀️</span>
+        <span class="moon">🌙</span>
+      </span>
+    </label>
+    <span id="modeText">Light Mode</span>
+  </div>
   <div class="container">
-    <h1>Test your knowledge</h1>
     <div>
       <h1 id="question">Question</h1>
       <div id="options">
@@ -23,6 +34,32 @@
   </div>
 
   <script src="main.js"></script>
+  <script>
+    // dark/light mode
+const switchToggle = document.getElementById('modeSwitch');
+const body = document.body;
+const modeText = document.getElementById('modeText');
+
+switchToggle.addEventListener('change', () => {
+  body.classList.toggle('dark-mode');
+  if (body.classList.contains('dark-mode')) {
+    modeText.textContent = 'Dark Mode';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    modeText.textContent = 'Light Mode';
+    localStorage.setItem('theme', 'light');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    body.classList.add('dark-mode');
+    modeText.textContent = 'Dark Mode';
+    switchToggle.checked = true;
+  }
+});
+  </script>
 </body>
 </html>
 

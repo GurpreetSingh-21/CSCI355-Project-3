@@ -1,18 +1,79 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz App</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="container">
-    <h1>Welcome to the Quiz!</h1>
-    <button id="start">Start Quiz</button>
+<body class="light-mode">
+
+  <div class="mode-toggle">
+    <label class="switch">
+      <input type="checkbox" id="modeSwitch" />
+      <span class="slider round">
+        <span class="sun">☀️</span>
+        <span class="moon">🌙</span>
+      </span>
+    </label>
+    <span id="modeText">Light Mode</span>
   </div>
-  
+
+  <div class="container">
+    <h1>🎯 Welcome to the Ultimate Quiz Challenge!</h1>
+    <p class="subtext">Test your knowledge. Beat the timer. Score high!</p>
+    
+    <button id="start">🚀 Start Quiz</button>
+    
+    <div id="quiz-container" style="display: none;">
+      <div class="timer-container">
+        <span class="timer">00:30</span>
+      </div>
+      
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      
+      <div class="score-display">
+        Score: <span id="score">0</span>
+      </div>
+      
+      <div class="question" id="question"></div>
+      
+      <div id="options"></div>
+      
+      <button id="next" style="display: none;">Next Question →</button>
+      <button id="restart" style="display: none;">🔄 Play Again</button>
+    </div>
+  </div>
+
+
   <script src="main.js"></script>
+  <script>
+    // dark/light mode
+const switchToggle = document.getElementById('modeSwitch');
+const body = document.body;
+const modeText = document.getElementById('modeText');
+
+switchToggle.addEventListener('change', () => {
+  body.classList.toggle('dark-mode');
+  if (body.classList.contains('dark-mode')) {
+    modeText.textContent = 'Dark Mode';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    modeText.textContent = 'Light Mode';
+    localStorage.setItem('theme', 'light');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    body.classList.add('dark-mode');
+    modeText.textContent = 'Dark Mode';
+    switchToggle.checked = true;
+  }
+});
+  </script>
 </body>
 </html>
