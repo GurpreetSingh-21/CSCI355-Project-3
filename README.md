@@ -1,5 +1,5 @@
 <br/>
-# CSCI355-Project-2 – Quiz App
+ CSCI355-Project-2 – Quiz App
 <br/>
 <br/>A simple web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
 <br/>
