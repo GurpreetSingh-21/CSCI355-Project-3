@@ -9,7 +9,6 @@
 </head>
 <body class="light-mode">
 
-
   <div class="mode-toggle">
     <label class="switch">
       <input type="checkbox" id="modeSwitch" />
@@ -20,38 +19,70 @@
     </label>
     <span id="modeText">Light Mode</span>
   </div>
+
   <div class="container">
-    <h1>Your Score</h1>
-    <p id="score"></p>
-    <button id="restart">Restart Quiz</button>
+    <h1>🎉 Quiz Summary</h1>
+
+    <div class="score-display">
+      Final Score: <span id="score">0</span>
+    </div>
+
+    <div class="summary-details">
+      <p>✅ Correct Answers: <span id="correctCount">0</span></p>
+      <p>❌ Incorrect Answers: <span id="incorrectCount">0</span></p>
+      <p>⏱️ Time Taken: <span id="timeTaken">00:00</span></p>
+    </div>
+
+    <button id="restart">🔄 Restart Quiz</button>
   </div>
 
   <script src="main.js"></script>
   <script>
-    // dark/light mode
-const switchToggle = document.getElementById('modeSwitch');
-const body = document.body;
-const modeText = document.getElementById('modeText');
+    // Dark/Light Mode
+    const switchToggle = document.getElementById('modeSwitch');
+    const body = document.body;
+    const modeText = document.getElementById('modeText');
 
-switchToggle.addEventListener('change', () => {
-  body.classList.toggle('dark-mode');
-  if (body.classList.contains('dark-mode')) {
-    modeText.textContent = 'Dark Mode';
-    localStorage.setItem('theme', 'dark');
-  } else {
-    modeText.textContent = 'Light Mode';
-    localStorage.setItem('theme', 'light');
-  }
-});
+    switchToggle.addEventListener('change', () => {
+      body.classList.toggle('dark-mode');
+      if (body.classList.contains('dark-mode')) {
+        modeText.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        modeText.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'light');
+      }
+    });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    body.classList.add('dark-mode');
-    modeText.textContent = 'Dark Mode';
-    switchToggle.checked = true;
-  }
-});
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        modeText.textContent = 'Dark Mode';
+        switchToggle.checked = true;
+      }
+
+      // Fetch results from localStorage (set in main.js)
+      const score = localStorage.getItem('score') || 0;
+      const correct = localStorage.getItem('correctCount') || 0;
+      const incorrect = localStorage.getItem('incorrectCount') || 0;
+      const time = localStorage.getItem('timeTaken') || '00:00';
+
+      document.getElementById('score').textContent = score;
+      document.getElementById('correctCount').textContent = correct;
+      document.getElementById('incorrectCount').textContent = incorrect;
+      document.getElementById('timeTaken').textContent = time;
+
+      // Restart button logic
+      document.getElementById('restart').addEventListener('click', () => {
+        // Clear stored data
+        localStorage.removeItem('score');
+        localStorage.removeItem('correctCount');
+        localStorage.removeItem('incorrectCount');
+        localStorage.removeItem('timeTaken');
+        window.location.href = 'index.html';
+      });
+    });
   </script>
 </body>
 </html>

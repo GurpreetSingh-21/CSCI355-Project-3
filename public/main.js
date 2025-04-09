@@ -4,6 +4,10 @@ let numberOfQuestions = 0;
 let randomIndex = -1;
 let timeLeft = 30;
 let timer;
+let correctCount = 0;
+let incorrectCount = 0;
+let elapsedTime = 0;
+
 
 // ========== INDEX PAGE ==========
 if (
@@ -144,6 +148,7 @@ if (window.location.pathname.includes("quiz.html")) {
 
       // Update and animate score
       score++;
+      correctCount++;
       animateScoreChange();
 
       // Show small confetti for correct answer
@@ -154,6 +159,8 @@ if (window.location.pathname.includes("quiz.html")) {
       // Wrong answer animations
       document.getElementById(selectedAnswer).classList.add("incorrect");
       document.getElementById(selectedAnswer).classList.add("shake-animation");
+
+      incorrectCount++;
 
       // Show correct answer with delayed highlight
       setTimeout(() => {
@@ -184,6 +191,11 @@ if (window.location.pathname.includes("quiz.html")) {
       // Save score in localStorage for results page
       localStorage.setItem("score", score);
       localStorage.setItem("total", numberOfQuestions);
+      localStorage.setItem("correctCount", correctCount);     // Save correct answers
+      localStorage.setItem("incorrectCount", incorrectCount); // Save incorrect answers
+      localStorage.setItem("timeTaken", `${elapsedTime}s`);   // Save time taken
+
+      
 
       // Transition out animation before redirect
       document.querySelector(".container").classList.add("fade-out");
@@ -346,6 +358,8 @@ function startTimer() {
 
   timer = setInterval(() => {
     timeLeft--;
+    elapsedTime++ ;
+
     updateTimerDisplay();
 
     if (timeLeft <= 0) {

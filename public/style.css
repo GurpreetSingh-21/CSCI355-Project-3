@@ -405,8 +405,40 @@ h1 {
 }
 
 
-/* Responsiveness*/
+.summary-details {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 20px 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  line-height: 1.8;
+  font-size: 18px;
+  color: #333;
+  max-width: 400px;
+  animation: fadeIn 0.8s ease forwards;
+}
 
+.summary-details p {
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.summary-details span {
+  font-weight: 700;
+  color: #00c9a7;
+}
+
+/* Dark mode support */
+.dark-mode .summary-details {
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #f5f5f5;
+}
+
+.dark-mode .summary-details span {
+  color: #00e0d5;
+}
+
+/* Responsiveness*/
 @media (max-width: 768px) {
   .container {
     max-width: 90%;
