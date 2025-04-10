@@ -21,7 +21,6 @@ Run this command in the project folder to install all dependencies:
 - http://localhost:3000
 
 <br/>
-<br/>
 
 ## ✨ Features
 
@@ -39,8 +38,7 @@ Run this command in the project folder to install all dependencies:
 - 📱 **Responsive design** (mobile, tablet, desktop)
 - 🎞️ **Smooth animations**: pop-ups, entrance/exit transitions
 
----
-
+<br/>
 ## 📁 Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript (Vanilla)
@@ -50,15 +48,13 @@ Run this command in the project folder to install all dependencies:
 - **Hosting:**
   - Render
 <br/>
-<br/>
 
 ## 📌 Notes
 
 - Quiz data is fetched dynamically via `fetch('/questions.json')` from the backend
 - Final results are calculated and stored in `localStorage`
 - Restarting the quiz resets session data and animations
-
----
+<br/>
 
 ## 👥 Team Members
 
