@@ -1,8 +1,7 @@
-<br/>
- CSCI355-Project-2 – Quiz App
-<br/>
-<br/>A simple web-based quiz app built using HTML, CSS, JavaScript, and Node.js with Express.
-<br/>
+# 🧠 CSCI355 Project 2 – Quiz App
+
+A dynamic web-based quiz app built using **HTML**, **CSS**, **Vanilla JavaScript**, and **Node.js with Express**.
+
 
 ## 🚀 How to Run the Project
 
@@ -24,34 +23,46 @@ Run this command in the project folder to install all dependencies:
 <br/>
 <br/>
 
-### ✨ Features
+## ✨ Features
 
-- ✅ Random 10 Questions per quiz
-- ⏱️ Countdown Timer per question (30s)
-- ✅ ❌ Answer Feedback – green for correct, red for incorrect
-- 📈 Progress Bar + “Question x of 10” indicator
-- 🎨 Dark & Light Mode Toggle (with localStorage memory)
-- 📱 Fully Responsive design (mobile, tablet, desktop)
-- 🧠 Animated UI – transitions, popups, confetti, effects
+- ✅ **Randomized 10 questions** from `questions.json`
+- ⏱️ **30-second timer** per question (auto-submit on timeout)
+- ✅ ❌ **Answer feedback** with color animations
+- 🔒 **Option lock-in** after selection to prevent changes
+- 📊 **Progress bar** showing quiz completion
+- 🌙☀️ **Dark & Light mode** with localStorage memory
+- 🎯 **Score summary page** with:
+  - ✅ Correct count
+  - ❌ Incorrect count
+  - ⏱️ Total time taken
+  - 🎉 Confetti effect on high scores
+- 📱 **Responsive design** (mobile, tablet, desktop)
+- 🎞️ **Smooth animations**: pop-ups, entrance/exit transitions
+
+---
+
+## 📁 Tech Stack
+
+- **Frontend:** HTML, CSS, JavaScript (Vanilla)
+- **Backend:** Node.js, Express.js
+- **Data Source:** JSON (`questions.json`)
+- **Storage:** localStorage (score, timer, session)
+- **Hosting:**
+  - Render
 <br/>
 <br/>
 
-### 📁 Tech Stack
+## 📌 Notes
 
-Frontend: HTML, CSS (Custom + Animations), Vanilla JavaScript
-Backend: Node.js + Express
-Data Storage: JSON (for questions), localStorage (for score/session)
-<br/>
-<br/>
+- Quiz data is fetched dynamically via `fetch('/questions.json')` from the backend
+- Final results are calculated and stored in `localStorage`
+- Restarting the quiz resets session data and animations
 
-### 📌 Notes
+---
 
-- Quiz questions are loaded from questions.json
-- Score is stored using localStorage and shown on the results page
-- You do not need to restart the server manually if using npm run dev
-<br/>
+## 👥 Team Members
 
-### 👥 Team Members
-
-Oake Soe, Mozie Najee, Gurpreet Singh, Prashanna Bhandari
-
+- Oake Soe  
+- Mozie Najee  
+- Gurpreet Singh  
+- Prashanna Bhandari
