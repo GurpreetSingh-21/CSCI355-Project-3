@@ -1,6 +1,6 @@
 # 🧠 CSCI355 Project 2 – Quiz App
 
-A dynamic web-based quiz app built using **HTML**, **CSS**, **Vanilla JavaScript**, and **Node.js with Express**.
+A dynamic web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
 
 
 ## 🚀 How to Run the Project
@@ -42,7 +42,7 @@ Run this command in the project folder to install all dependencies:
 
 ## 📁 Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript (Vanilla)
+- **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Node.js, Express.js
 - **Data Source:** JSON (`questions.json`)
 - **Storage:** localStorage (score, timer, session)
