@@ -39,6 +39,7 @@ Run this command in the project folder to install all dependencies:
 - 🎞️ **Smooth animations**: pop-ups, entrance/exit transitions
 
 <br/>
+
 ## 📁 Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript (Vanilla)
