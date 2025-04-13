@@ -1,4 +1,3 @@
-// server.js (in root folder)
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -6,10 +5,15 @@ const fs = require('fs');
 const app = express();
 const PORT = 3000;
 
-// Serve static files from the "public" folder
+// Serve static files from "public" folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve questions from questions.json
+// Redirect root ("/") to login page
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
+
+// Serve questions.json
 app.get('/questions.json', (req, res) => {
   const filePath = path.join(__dirname, 'questions.json');
   fs.readFile(filePath, 'utf8', (err, data) => {

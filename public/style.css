@@ -494,3 +494,129 @@ h1 {
     font-size: 13px;
   }
 }
+
+
+/* Login Page Specific Enhancements */
+.login-input {
+  padding: 15px;
+  margin: 20px 0;
+  width: 100%;
+  border: 2px solid #00c9a7;
+  border-radius: 12px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.login-input:focus {
+  border-color: #00d4ff;
+}
+
+.dark-mode .login-input {
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #f5f5f5;
+  border: 2px solid #00c9a7;
+}
+
+#loginBtn {
+  background: linear-gradient(135deg, #00c9a7, #00d4ff);
+  color: white;
+  width: 100%;
+  font-size: 16px;
+  letter-spacing: 1px;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 8px 20px rgba(0, 201, 167, 0.3);
+}
+
+#loginBtn:hover {
+  background: linear-gradient(135deg, #00d4ff, #00c9a7);
+  transform: scale(1.03);
+}
+
+
+.scale-in {
+  animation: scaleIn 0.6s ease forwards;
+}
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+
+
+
+/* === Results Page Enhancements === */
+.container.results {
+  padding: 40px 30px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.results p {
+  margin-bottom: 20px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.results p#score {
+  font-size: 22px;
+  font-weight: bold;
+  color: #00c9a7;
+  margin-bottom: 25px;
+}
+
+.results p.result-message {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3c3c3c;
+  margin-top: 20px;
+}
+
+.dark-mode .results p.result-message {
+  color: #f0f0f0;
+}
+
+.results button {
+  margin-top: 30px;
+}
+
+.results h1 {
+  margin-bottom: 25px;
+}
+
+#playerGreeting {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+
+.tab-btn {
+  padding: 10px 20px;
+  margin: 0 5px;
+  border: 2px solid #00c9a7;
+  background-color: white;
+  color: #00c9a7;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  background-color: #00c9a7;
+  color: white;
+}
