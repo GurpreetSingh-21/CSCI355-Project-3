@@ -4,10 +4,6 @@ let numberOfQuestions = 0;
 let randomIndex = -1;
 let timeLeft = 30;
 let timer;
-let correctCount = 0;
-let incorrectCount = 0;
-let elapsedTime = 0;
-
 
 // ========== INDEX PAGE ==========
 if (
@@ -15,7 +11,17 @@ if (
   window.location.pathname.includes("index.html")
 ) {
   document.addEventListener("DOMContentLoaded", () => {
-    const startBtn = document.getElementById("start");
+
+    // **New** Start of login check feature added
+    // Ensures a user has logged in before accessing the quiz home page
+    const user = localStorage.getItem("quizUser");
+    if (!user) {
+      window.location.href = "login.html"; // redirect if not logged in
+      return;
+    }
+    // End of Login check feature
+
+    const startBtn = document.getElementById("start")
 
     // Add entrance animations
     document.querySelector("h1").classList.add("animate-entrance");
@@ -43,6 +49,31 @@ if (
 // ========== QUIZ PAGE ==========
 if (window.location.pathname.includes("quiz.html")) {
   document.addEventListener("DOMContentLoaded", () => {
+
+  // ***New*** Display players name form localStorage
+  const playerName = localStorage.getItem("quizUser");
+  const nameSpan = document.getElementById("playerName");
+  if (nameSpan) {
+    nameSpan.textContent = playerName ? playerName  : "Guest";
+  }
+
+  // ***New*** Initialize live score display 
+  const scoreDisplay = document.getElementById("liveScore");
+  if (scoreDisplay) {
+    scoreDisplay.textContent = score;
+  }
+
+  //***New*** Logout button logic
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("quizUser"); // clear player name
+      localStorage.removeItem("score"); // clear score
+      localStorage.removeItem("total"); // clear progress
+      window.location.href = ("login.html"); // go back to login page
+    });
+  }
+
     // Add animated UI elements
     createAnimatedBackground();
     addProgressBar();
@@ -148,7 +179,12 @@ if (window.location.pathname.includes("quiz.html")) {
 
       // Update and animate score
       score++;
-      correctCount++;
+
+      // ***New*** Update live score display after correct answer
+      const scoreDisplay = document.getElementById("liveScore");
+      if (scoreDisplay) {
+        scoreDisplay.textContent = score;
+      }
       animateScoreChange();
 
       // Show small confetti for correct answer
@@ -159,8 +195,6 @@ if (window.location.pathname.includes("quiz.html")) {
       // Wrong answer animations
       document.getElementById(selectedAnswer).classList.add("incorrect");
       document.getElementById(selectedAnswer).classList.add("shake-animation");
-
-      incorrectCount++;
 
       // Show correct answer with delayed highlight
       setTimeout(() => {
@@ -191,11 +225,6 @@ if (window.location.pathname.includes("quiz.html")) {
       // Save score in localStorage for results page
       localStorage.setItem("score", score);
       localStorage.setItem("total", numberOfQuestions);
-      localStorage.setItem("correctCount", correctCount);     // Save correct answers
-      localStorage.setItem("incorrectCount", incorrectCount); // Save incorrect answers
-      localStorage.setItem("timeTaken", `${elapsedTime}s`);   // Save time taken
-
-      
 
       // Transition out animation before redirect
       document.querySelector(".container").classList.add("fade-out");
@@ -221,7 +250,7 @@ if (window.location.pathname.includes("results.html")) {
     // Add entrance animation to results container
     document.querySelector(".container").classList.add("scale-in");
 
-    if (scoreElement) {
+    if (scoreElement && finalScore && totalQuestions) {
       // Animate the score counter
       animateCounter(
         scoreElement,
@@ -230,6 +259,7 @@ if (window.location.pathname.includes("results.html")) {
         1500,
         `Your Score: ${finalScore}/${totalQuestions}`
       );
+      
 
       // Show different messages based on score
       const messageElement = document.createElement("p");
@@ -358,8 +388,6 @@ function startTimer() {
 
   timer = setInterval(() => {
     timeLeft--;
-    elapsedTime++ ;
-
     updateTimerDisplay();
 
     if (timeLeft <= 0) {

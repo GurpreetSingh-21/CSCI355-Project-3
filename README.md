@@ -1,3 +1,4 @@
+
 # 🧠 CSCI355 Project 2 – Quiz App
 
 A dynamic web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
@@ -6,6 +7,13 @@ A dynamic web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and 
 ## Live Link
 https://csci355-project-2.onrender.com/
 
+=======
+<br/>
+ CSCI355-Project-2 – Quiz App
+<br/>
+<br/>A simple web-based quiz app built using HTML, CSS, JavaScript, and Node.js with Express.
+<br/>
+>>>>>>> e0fc898 (initial)
 
 ## 🚀 How to Run the Project
 
@@ -25,6 +33,7 @@ Run this command in the project folder to install all dependencies:
 - http://localhost:3000
 
 <br/>
+
 
 ## ✨ Features
 
@@ -67,3 +76,38 @@ Run this command in the project folder to install all dependencies:
 - Mozie Najee  
 - Gurpreet Singh  
 - Prashanna Bhandari
+=======
+<br/>
+
+### ✨ Features
+
+- ✅ Random 10 Questions per quiz
+- ⏱️ Countdown Timer per question (30s)
+- ✅ ❌ Answer Feedback – green for correct, red for incorrect
+- 📈 Progress Bar + “Question x of 10” indicator
+- 🎨 Dark & Light Mode Toggle (with localStorage memory)
+- 📱 Fully Responsive design (mobile, tablet, desktop)
+- 🧠 Animated UI – transitions, popups, confetti, effects
+<br/>
+<br/>
+
+### 📁 Tech Stack
+
+Frontend: HTML, CSS (Custom + Animations), Vanilla JavaScript
+Backend: Node.js + Express
+Data Storage: JSON (for questions), localStorage (for score/session)
+<br/>
+<br/>
+
+### 📌 Notes
+
+- Quiz questions are loaded from questions.json
+- Score is stored using localStorage and shown on the results page
+- You do not need to restart the server manually if using npm run dev
+<br/>
+
+### 👥 Team Members
+
+Oake Soe, Mozie Najee, Gurpreet Singh, Prashanna Bhandari
+
+>>>>>>> e0fc898 (initial)
