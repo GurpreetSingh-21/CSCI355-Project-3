@@ -146,8 +146,9 @@ if (window.location.pathname.includes("quiz.html")) {
     nextBtn.classList.add("fade-in");
   }
 
-  document.getElementById("next").addEventListener("click", () => {
+  document.getElementById("next")?.addEventListener("click", () => {
     if (numberOfQuestions < 10) {
+      // Show next question
       document.querySelector(".container").classList.add("slide-out");
       setTimeout(() => {
         document.querySelector(".container").classList.remove("slide-out");
@@ -155,13 +156,21 @@ if (window.location.pathname.includes("quiz.html")) {
         showQuestion();
       }, 300);
     } else {
+      // ✅ This ONLY runs after 10th question
+      const quizEndTime = Date.now();
       localStorage.setItem("score", score);
       localStorage.setItem("total", numberOfQuestions);
-      localStorage.setItem("quizTime", Date.now() - quizStartTime);
+      localStorage.setItem("quizTime", quizEndTime - quizStartTime);
       localStorage.setItem("quizDate", new Date().toISOString());
+  
+      const leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+      const playerName = localStorage.getItem("quizUser") || "Guest";
+      leaderboard.push({ name: playerName, score });
+      localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+  
       document.querySelector(".container").classList.add("fade-out");
       setTimeout(() => {
-        window.location.href = "/results.html";
+        window.location.href = "results.html";
       }, 500);
     }
   });
@@ -390,3 +399,63 @@ function createConfetti(count = 100, sourceEl = null) {
     ).onfinish = () => confetti.remove();
   }
 }
+
+// Add this to your main.js file
+
+function createBlobs() {
+  const animatedBg = document.querySelector('.animated-bg');
+  
+  // Clear any existing blobs
+  animatedBg.innerHTML = '';
+  
+  // Create blobs
+  const colors = ['#00c9a7', '#00d4ff', '#4caf50', '#f1c40f'];
+  const blobCount = 5;
+  
+  for (let i = 0; i < blobCount; i++) {
+    const blob = document.createElement('div');
+    blob.className = 'blob';
+    
+    // Random size between 200-400px
+    const size = Math.random() * 200 + 200;
+    
+    // Random position
+    const left = Math.random() * 100;
+    const top = Math.random() * 100;
+    
+    // Random color from our palette
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    
+    // Set styles
+    blob.style.width = `${size}px`;
+    blob.style.height = `${size}px`;
+    blob.style.left = `${left}%`;
+    blob.style.top = `${top}%`;
+    blob.style.backgroundColor = color;
+    
+    animatedBg.appendChild(blob);
+  }
+  
+  // Animate blobs
+  moveBlobs();
+}
+
+function moveBlobs() {
+  const blobs = document.querySelectorAll('.blob');
+  
+  blobs.forEach(blob => {
+    // Random new position
+    const newLeft = Math.random() * 100;
+    const newTop = Math.random() * 100;
+    
+    // Apply new position with transition
+    blob.style.left = `${newLeft}%`;
+    blob.style.top = `${newTop}%`;
+  });
+  
+  // Move blobs every 3 seconds
+  setTimeout(moveBlobs, 3000);
+}
+
+// Call this function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', createBlobs);

@@ -48,6 +48,8 @@
 const switchToggle = document.getElementById('modeSwitch');
 const body = document.body;
 const modeText = document.getElementById('modeText');
+const quizStartTime = Date.now();
+
 
 switchToggle.addEventListener('change', () => {
   body.classList.toggle('dark-mode');

@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Results</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body class="light-mode">
-
   <!-- Mode Toggle -->
   <div class="mode-toggle">
     <label class="switch">
-      <input type="checkbox" id="modeSwitch" />
+      <input type="checkbox" id="modeSwitch">
       <span class="slider round">
         <span class="sun">☀️</span>
         <span class="moon">🌙</span>
@@ -25,14 +24,16 @@
 
   <!-- Results Container -->
   <div class="container results">
-
     <h1>🎉 Quiz Summary</h1>
     <p id="playerGreeting" class="subtext"></p>
     <p id="score"></p>
     <p id="accuracy"></p>
     <p id="timeTaken"></p>
     <p id="quizDate"></p>
-    <button id="restart">🔁 Restart Quiz</button>
+    <div class="button-row">
+      <button id="restart">🔁 Restart Quiz</button>
+      <button id="leaderboardBtn">🏆 View Leaderboard</button>
+    </div>
   </div>
 
   <script src="main.js"></script>
@@ -41,13 +42,13 @@
     const switchToggle = document.getElementById('modeSwitch');
     const body = document.body;
     const modeText = document.getElementById('modeText');
-
+    
     switchToggle.addEventListener('change', () => {
       body.classList.toggle('dark-mode');
       modeText.textContent = body.classList.contains('dark-mode') ? 'Dark Mode' : 'Light Mode';
       localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
     });
-
+    
     document.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'dark') {
@@ -55,6 +56,12 @@
         modeText.textContent = 'Dark Mode';
         switchToggle.checked = true;
       }
+      
+      // Leaderboard button navigation
+      const leaderboardBtn = document.getElementById("leaderboardBtn");
+      leaderboardBtn?.addEventListener("click", () => {
+        window.location.href = "leaderboard.html";
+      });
     });
   </script>
 </body>
