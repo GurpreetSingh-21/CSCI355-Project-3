@@ -1,4 +1,4 @@
-# 🧠 CSCI355 Project 2 – Quiz App
+# 🧠 CSCI355 Project 3 – Quiz App
 
 A dynamic web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
 
