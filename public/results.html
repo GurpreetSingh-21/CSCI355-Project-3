@@ -64,5 +64,34 @@
       });
     });
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = localStorage.getItem("quizUser");
+      const score = parseInt(localStorage.getItem("score"), 10);
+      const total = parseInt(localStorage.getItem("total"), 10);
+      const time = parseInt(localStorage.getItem("quizTime") || 0, 10);
+      const date = localStorage.getItem("quizDate");
+  
+      if (!user || isNaN(score) || isNaN(total)) {
+        document.querySelector(".container").innerHTML = "<p>⚠️ No quiz data found. Please take the quiz first.</p>";
+        return;
+      }
+  
+      document.getElementById("playerGreeting").textContent = `Well done, ${user}!`;
+      document.getElementById("score").textContent = `Your Score: ${score}/${total}`;
+      document.getElementById("accuracy").textContent = `Accuracy: ${Math.round((score / total) * 100)}%`;
+      document.getElementById("timeTaken").textContent = `Time Taken: ${Math.floor(time / 1000)} seconds`;
+      document.getElementById("quizDate").textContent = `Completed On: ${new Date(date).toLocaleString()}`;
+  
+      // Restart button
+      document.getElementById("restart")?.addEventListener("click", () => {
+        localStorage.removeItem("score");
+        localStorage.removeItem("total");
+        localStorage.removeItem("quizTime");
+        localStorage.removeItem("quizDate");
+        window.location.href = "index.html";
+      });
+    });
+  </script>
 </body>
 </html>

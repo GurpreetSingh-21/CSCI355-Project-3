@@ -37,10 +37,10 @@
 
     <p class="subtext" id="formSubtext">Welcome back! Enter your name to log in.</p>
 
-    <form action="/signin" method="POST">
-      <input class="login-input" type="text" name="username" placeholder="Enter your name..." required />
+    <form id="loginForm">
+      <input id="username" class="login-input" type="text" name="username" placeholder="Enter your name..." required />
       <br />
-      <button type="submit" id="loginBtn">Login</button>
+      <button type="button" id="loginBtn">Login</button>
     </form>
   </div>
 
@@ -52,13 +52,8 @@
 
     switchToggle.addEventListener('change', () => {
       body.classList.toggle('dark-mode');
-      if (body.classList.contains('dark-mode')) {
-        modeText.textContent = 'Dark Mode';
-        localStorage.setItem('theme', 'dark');
-      } else {
-        modeText.textContent = 'Light Mode';
-        localStorage.setItem('theme', 'light');
-      }
+      modeText.textContent = body.classList.contains('dark-mode') ? 'Dark Mode' : 'Light Mode';
+      localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
     });
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -71,6 +66,8 @@
     });
   </script>
 
+  <!-- Link to your login.js file -->
+  <script src="login.js"></script>
+
 </body>
 </html>
-

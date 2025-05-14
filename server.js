@@ -13,7 +13,7 @@ let db;
 
 client.connect()
   .then(() => {
-    db = client.db('myQuizApp'); // change this to match your actual DB name
+    db = client.db('myQuizApp'); // Update this to your actual DB name if needed
     console.log("✅ Connected to MongoDB");
   })
   .catch(err => {
@@ -27,20 +27,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Home redirects to login
 app.get('/', (req, res) => {
-  res.redirect('/login.html');
+  res.status(200).json({ message: "Signup successful", redirect: "index.html" });
 });
 
-// Serve signup.html
+// Serve signup and login pages
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signup.html'));
 });
-
-// Serve login.html
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Sign Up route
+// ✅ Signup route (JSON response)
 app.post('/signup', async (req, res) => {
   const { username } = req.body;
 
@@ -57,16 +55,15 @@ app.post('/signup', async (req, res) => {
     }
 
     await usersCollection.insertOne({ username });
-
     console.log(`🆕 New user signed up: ${username}`);
-    res.redirect('/login.html');
+    res.status(200).json({ message: 'Signup successful', redirect: 'login.html' });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Login route
+// ✅ Login route (JSON response)
 app.post('/signin', async (req, res) => {
   const { username } = req.body;
 
@@ -83,7 +80,7 @@ app.post('/signin', async (req, res) => {
     }
 
     console.log(`✅ User logged in: ${username}`);
-    res.redirect('index.html');
+    res.status(200).json({ message: "Login successful", redirect: "index.html" });
   } catch (error) {
     console.error('Signin error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -101,6 +98,46 @@ app.get('/questions.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(data);
   });
+});
+
+// Submit score to MongoDB
+app.post('/submit-score', async (req, res) => {
+  const { name, score } = req.body;
+
+  if (!name || typeof score !== 'number') {
+    return res.status(400).json({ message: 'Invalid input' });
+  }
+
+  try {
+    const scoresCollection = db.collection('scores');
+    const entry = {
+      name,
+      score,
+      timestamp: new Date()
+    };
+    await scoresCollection.insertOne(entry);
+    res.status(201).json({ message: 'Score submitted successfully' });
+  } catch (err) {
+    console.error('Submit score error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get leaderboard data
+app.get('/leaderboard', async (req, res) => {
+  try {
+    const scoresCollection = db.collection('scores');
+    const topScores = await scoresCollection
+      .find()
+      .sort({ score: -1, timestamp: 1 })
+      .limit(10)
+      .toArray();
+
+    res.json(topScores);
+  } catch (err) {
+    console.error('Leaderboard fetch error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Start server

@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginTab = document.getElementById("loginTab");
   const signupTab = document.getElementById("signupTab");
 
-  let mode = "login"; // "signup" or "login"
+  let mode = "login"; // Default mode
 
+  // Toggle to login mode
   loginTab.addEventListener("click", () => {
     mode = "login";
     formTitle.textContent = "🔐 Login";
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     signupTab.classList.remove("active");
   });
 
+  // Toggle to signup mode
   signupTab.addEventListener("click", () => {
     mode = "signup";
     formTitle.textContent = "🆕 Sign Up";
@@ -26,51 +28,55 @@ document.addEventListener('DOMContentLoaded', () => {
     loginTab.classList.remove("active");
   });
 
-  loginBtn.addEventListener("click", () => {
-    const name = usernameInput.value.trim();
+  // Handle form submission
+  loginBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const username = usernameInput.value.trim();
 
-    if (name.length < 3) {
+    if (username.length < 3) {
       alert("Name must be at least 3 characters.");
       return;
     }
 
-    // Get existing users
-    const users = JSON.parse(localStorage.getItem("quizUsers") || "[]");
+    try {
+      const endpoint = mode === "signup" ? "/signup" : "/signin";
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username })
+      });
 
-    if (mode === "signup") {
-      if (users.includes(name)) {
-        alert("Username already taken.");
+      const result = await res.json();
+
+      if (!res.ok) {
+        alert(result.message || "Something went wrong.");
         return;
       }
 
-      users.push(name);
-      localStorage.setItem("quizUsers", JSON.stringify(users));
-      localStorage.setItem("quizUser", name);
-      alert("Account created successfully!");
-      window.location.href = "index.html";
+      // Save user in localStorage
+      localStorage.setItem("quizUser", username);
 
-    } else if (mode === "login") {
-      if (!users.includes(name)) {
-        alert("User not found. Please sign up first.");
-        return;
-      }
+      // Navigate after success
+      window.location.href = result.redirect || "index.html";
 
-      localStorage.setItem("quizUser", name);
-      window.location.href = "index.html";
+    } catch (err) {
+      console.error("⚠️ Auth Error:", err);
+      alert("Server error. Please try again later.");
     }
   });
 
-  // Restore dark mode if active
+  // === Theme: Dark/Light Mode ===
   const switchToggle = document.getElementById('modeSwitch');
   const body = document.body;
   const modeText = document.getElementById('modeText');
 
   switchToggle.addEventListener('change', () => {
-    body.classList.toggle('dark-mode');
-    modeText.textContent = body.classList.contains('dark-mode') ? 'Dark Mode' : 'Light Mode';
-    localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+    const isDark = body.classList.toggle('dark-mode');
+    modeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   });
 
+  // Apply saved theme on load
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') {
     body.classList.add('dark-mode');

@@ -37,10 +37,10 @@
 
     <p class="subtext" id="formSubtext">Create an account by entering your name.</p>
 
-    <form action="/signup" method="POST">
-      <input class="login-input" type="text" name="username" placeholder="Enter your name..." required />
+    <form id="signupForm">
+      <input id="username" class="login-input" type="text" name="username" placeholder="Enter your name..." required />
       <br />
-      <button type="submit" id="signupBtn">Sign Up</button>
+      <button type="button" id="loginBtn">Sign Up</button>
     </form>
   </div>
 
@@ -52,13 +52,8 @@
 
     switchToggle.addEventListener('change', () => {
       body.classList.toggle('dark-mode');
-      if (body.classList.contains('dark-mode')) {
-        modeText.textContent = 'Dark Mode';
-        localStorage.setItem('theme', 'dark');
-      } else {
-        modeText.textContent = 'Light Mode';
-        localStorage.setItem('theme', 'light');
-      }
+      modeText.textContent = body.classList.contains('dark-mode') ? 'Dark Mode' : 'Light Mode';
+      localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
     });
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -71,6 +66,8 @@
     });
   </script>
 
+  <!-- Link to shared login.js for signup logic -->
+  <script src="login.js"></script>
+
 </body>
 </html>
-
