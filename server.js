@@ -20,25 +20,13 @@ client.connect()
     console.error('❌ MongoDB connection error:', err);
   });
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Home redirects to login
-app.get('/', (req, res) => {
-  res.redirect('/login.html');
-});
-
-// Serve signup.html
-app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
-});
-
-// Serve login.html
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
 
 // Sign Up route
 app.post('/signup', async (req, res) => {
@@ -83,10 +71,11 @@ app.post('/signin', async (req, res) => {
     }
 
     console.log(`✅ User logged in: ${username}`);
-    res.redirect('index.html');
+    console.log('Redirecting to /index.html');
+    res.redirect('/index.html');
   } catch (error) {
     console.error('Signin error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -105,5 +94,5 @@ app.get('/questions.json', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running at ${PORT}`);
 });

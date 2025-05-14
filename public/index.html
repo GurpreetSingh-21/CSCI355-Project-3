@@ -1,10 +1,12 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz App</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body class="light-mode">
 
   <div class="mode-toggle">
@@ -46,33 +48,33 @@
     </div>
   </div>
 
-
-  <script src="main.js"></script>
+<!-- 
+  <script src="main.js"></script> -->
   <script>
     // dark/light mode
-const switchToggle = document.getElementById('modeSwitch');
-const body = document.body;
-const modeText = document.getElementById('modeText');
+    const switchToggle = document.getElementById('modeSwitch');
+    const body = document.body;
+    const modeText = document.getElementById('modeText');
 
-switchToggle.addEventListener('change', () => {
-  body.classList.toggle('dark-mode');
-  if (body.classList.contains('dark-mode')) {
-    modeText.textContent = 'Dark Mode';
-    localStorage.setItem('theme', 'dark');
-  } else {
-    modeText.textContent = 'Light Mode';
-    localStorage.setItem('theme', 'light');
-  }
-});
+    switchToggle.addEventListener('change', () => {
+      body.classList.toggle('dark-mode');
+      if (body.classList.contains('dark-mode')) {
+        modeText.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        modeText.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'light');
+      }
+    });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    body.classList.add('dark-mode');
-    modeText.textContent = 'Dark Mode';
-    switchToggle.checked = true;
-  }
-});
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        modeText.textContent = 'Dark Mode';
+        switchToggle.checked = true;
+      }
+    });
   </script>
 </body>
 </html>
