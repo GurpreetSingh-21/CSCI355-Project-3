@@ -7,17 +7,23 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// MongoDB connection
 const client = new MongoClient(process.env.MONGODB_URI);
 let db;
 
+// Connect to MongoDB and start server only after success
 client.connect()
   .then(() => {
-    db = client.db('myQuizApp'); // Update this to your actual DB name if needed
+    db = client.db('myQuizApp'); // ✅ your actual DB name
     console.log("✅ Connected to MongoDB");
+
+    // Start server only after DB is ready
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
   })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err);
+    process.exit(1); // ❌ Exit to avoid running with broken DB
   });
 
 // Middleware
@@ -27,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Home redirects to login
 app.get('/', (req, res) => {
-  res.status(200).json({ message: "Signup successful", redirect: "index.html" });
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Serve signup and login pages
@@ -129,13 +135,13 @@ app.get('/leaderboard', async (req, res) => {
     const scoresCollection = db.collection('scores');
     const topScores = await scoresCollection
       .find()
-      .sort({ score: -1, timestamp: 1 })
+      .sort({ score: -1, timestamp: 1 }) // Highest score first, then earliest
       .limit(10)
       .toArray();
-
+      console.log("🎯 Fetched scores:", topScores);
     res.json(topScores);
   } catch (err) {
-    console.error('Leaderboard fetch error:', err);
+    console.error('❌ Leaderboard fetch error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
