@@ -33,7 +33,9 @@
     <div class="button-row">
       <button id="restart">🔁 Restart Quiz</button>
       <button id="leaderboardBtn">🏆 View Leaderboard</button>
+     
     </div>
+    <button id="logoutBtn">🚪 Logout</button>
   </div>
 
   <!-- Theme & Results Logic -->
@@ -87,6 +89,15 @@
       document.getElementById("leaderboardBtn")?.addEventListener("click", () => {
         window.location.href = "leaderboard.html";
       });
+      // Logout
+    document.getElementById("logoutBtn")?.addEventListener("click", () => {
+      localStorage.removeItem("quizUser");
+      localStorage.removeItem("score");
+      localStorage.removeItem("total");
+      localStorage.removeItem("quizTime");
+      localStorage.removeItem("quizDate");
+      window.location.href = "login.html"; // or "signup.html"
+    });
     });
   </script>
 </body>
