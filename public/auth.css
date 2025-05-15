@@ -1,0 +1,253 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+    transition: background-color 0.15s ease, color 0.15s ease;
+  
+  overflow: hidden;
+  position: relative;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 10;
+  max-width: 400px;
+  width: 90%;
+}
+
+h1 {
+  font-size: 26px;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, #00c9a7, #00d4ff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+#formTitle ul{
+    text-decoration: none;
+}
+#formTitle li{
+   list-style: none;
+   text-decoration-line: none;
+}
+
+.subtext {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 20px;
+  border: 2px solid #00c9a7;
+  border-radius: 12px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.login-input:focus {
+  border-color: #00d4ff;
+}
+
+button {
+  background: linear-gradient(135deg, #00c9a7, #00b897);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #00d4ff, #00c9a7);
+  transform: scale(1.05);
+}
+
+.tab-btn {
+  background-color: transparent;
+  border: 2px solid #00c9a7;
+  padding: 8px 18px;
+  margin: 0 5px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.tab-btn.active {
+  background-color: #00c9a7;
+  color: white;
+}
+
+.mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    z-index: 2;
+  }
+  
+  input:checked + .slider {
+    background-color: #00c9a7;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(30px);
+  }
+  
+  .sun, .moon {
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #modeText {
+    display: flex;
+    align-items: center;
+    height: 30px;
+  }
+
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  transition: all 1s ease;
+  z-index: 1;
+}
+
+/* Light Mode */
+.light-mode {
+  background: linear-gradient(120deg, #e0f7fa, #bbdefb);
+  color: #333;
+}
+
+.light-mode .container {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.light-mode .login-input {
+  background-color: white;
+  color: #333;
+}
+
+/* Dark Mode */
+.dark-mode {
+  background: linear-gradient(120deg, #121212, #2c3e50);
+  color: #f5f5f5;
+}
+
+.dark-mode .container {
+  background-color: rgba(30, 30, 30, 0.95);
+}
+
+.dark-mode .login-input {
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #f5f5f5;
+  border-color: #00c9a7;
+}
+
+.dark-mode .subtext {
+  color: #ccc;
+}
+
+.dark-mode .tab-btn {
+  border-color: #00c9a7;
+  color: white;
+}
+
+.dark-mode .tab-btn.active {
+  background-color: #00c9a7;
+  color: white;
+}
+
+a.tab-btn {
+    text-decoration: none;
+    color: inherit; /* Inherit text color from parent (matches the theme) */
+  }
+  
+  a.tab-btn:hover {
+    text-decoration: none;
+    color: inherit;
+  }

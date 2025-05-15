@@ -15,11 +15,6 @@ client.connect()
   .then(() => {
     db = client.db('myQuizApp'); // ✅ your actual DB name
     console.log("✅ Connected to MongoDB");
-
-    // Start server only after DB is ready
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
-    });
   })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err);
