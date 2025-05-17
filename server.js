@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;

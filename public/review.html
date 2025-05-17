@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Your Answers</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="review.css">
+</head>
+<body class="light-mode">
+
+    <!-- Mode Toggle -->
+     <div class="mode-toggle">
+        <label class="switch">
+            <input type="checkbox" id="modeSwitch" />
+            <span class="slider round">
+                <span class="sun">☀️</span>
+                <span class="moon">🌙</span>
+            </span>
+        </label>
+        <span id="modeText">Light Mode</span>
+     </div>
+
+     <div class="container results">
+        <h1>📝 Review Your Answers</h1>
+        <div id="reviewContainer"></div>
+        <button id="backBtn">⬅️ Back to Home</button>
+     </div>
+
+     <!-- Theme + Review Logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const body = document.body;
+            const switchToggle = document.getElementById("modeSwitch");
+            const modeText = document.getElementById("modeText");
+
+            //  Theme Setup 
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                body.classList.add("dark-mode");
+                modeText.textContent = "Dark Mode";
+                switchToggle.checked = true;
+            }
+            else {
+                body.classList.add("light-mode");
+                modeText.textContent = "Light Mode";
+                switchToggle.checked = false;
+            }
+
+            switchToggle?.addEventListener("change", () => {
+                const isDark = switchToggle.checked;
+                body.classList.toggle("dark-mode", isDark);
+                body.classList.toggle("light-mode", !isDark);
+                modeText.textContent = isDark ? "Dark Mode" : "Light Mode";
+                localStorage.setItem("theme", isDark ? "dark" : "light");
+            });
+
+            // Load Review Data
+            const container = document.getElementById("reviewContainer");
+            const history = JSON.parse(localStorage.getItem("quizHistory") || "[]");
+
+            if (history.length === 0) {
+                container.innerHTML = "<p>⚠️ No quiz history found. Please take a quiz first.</p>";
+                return;
+            }
+
+            history.forEach((q, i) => {
+                const div = document.createElement("div");
+                div.classList.add("question-box");
+
+                const gotWrong = q.userAnswer !== q.correctAnswer;
+
+                div.innerHTML = ` 
+                <h3>Q${i + 1}: ${q.question}</h3>
+                <p class="correct">✅ Correct Answer: ${q.correctAnswer}</p>
+                ${
+                  gotWrong
+                  ? `<p class="wrong">❌ Your Answer: ${q.userAnswer}</p>`
+                  : `<p class="correct">✅ You got it right!</p>`
+            }
+        `;
+        container.appendChild(div);
+        });
+
+        // Back Button
+        document.getElementById("backBtn")?.addEventListener("click", () => {
+            window.location.href = "index.html";
+        });
+    });
+    </script>
+</body>
+</html>

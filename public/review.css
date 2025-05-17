@@ -1,0 +1,104 @@
+/* General body scroll and light mode background */
+body.light-mode {
+  background: linear-gradient(to bottom right, #e0f7fa, #c8e6c9); /* soft blue/green gradient */
+  color: #333;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body.dark-mode {
+  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Main container for review page */
+.container.results {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  max-height: 85vh;
+}
+
+body.dark-mode .container.results {
+  background-color: rgba(30, 30, 30, 0.95);
+}
+
+/* Each question box */
+.question-box {
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+body.dark-mode .question-box {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+}
+
+/* Question text */
+.question-box h3 {
+  color: #00bcd4;
+  margin-bottom: 10px;
+}
+
+/* Answer styling */
+.correct {
+  color: #2e7d32;
+  font-weight: bold;
+  background-color: #66bb6a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: inline-block;
+}
+
+.wrong {
+  color: #c62828;
+  font-weight: bold;
+  background-color: #ef9a9a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: inline-block;
+}
+
+/* Back button */
+#backBtn {
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #00c9a7;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#backBtn:hover {
+  background-color: #009e82;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container.results {
+    padding: 15px;
+  }
+
+  .question-box {
+    padding: 15px;
+  }
+}

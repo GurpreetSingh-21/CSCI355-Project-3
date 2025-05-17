@@ -67,5 +67,25 @@
       });
     });
   </script>
+
+  <!-- *** (Review.html page task) ***-->
+   <!-- Track which answer button the user clicks (A/B/C/D) and store in localStorage -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const answerButtons = document.querySelectorAll(".choice");
+
+    // Reset answers whe the quiz starts
+    localStorage.setItem("userAnswers", JSON.stringify([]));
+
+    // Listen for answer button clicks
+    answerButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        let answers = JSON.parse(localStorage.getItem("userAnswers")) || [];
+        answers.push(button.id); //Store A, B, C, or D dependding on what was clicked
+        localStorage.setItem("userAnswers", JSON.stringify(answers));
+        });
+      });
+    });
+  </script>
 </body>
 </html>
