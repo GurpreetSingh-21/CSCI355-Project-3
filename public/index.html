@@ -8,44 +8,52 @@
 </head>
 <body class="light-mode">
 
-  <div class="mode-toggle">
-    <label class="switch">
-      <input type="checkbox" id="modeSwitch" />
-      <span class="slider round">
-        <span class="sun">☀️</span>
-        <span class="moon">🌙</span>
-      </span>
-    </label>
-    <span id="modeText">Light Mode</span>
-  </div>
+    <nav class="navbar">
+      <ul class="nav-links">
+        <li><a href="./index.html" id="nav-home">Home</a></li>
+        <li><a href="./leaderboard.html" id="nav-leaderboard">Leaderboard</a></li>
+        <li><a href="./login.html" id="nav-logout">Logout</a></li>
+      </ul>
+    </nav>
 
-  <div class="container">
-    <h1>🎯 Welcome to the Ultimate Quiz Challenge!</h1>
-    <p class="subtext">Test your knowledge. Beat the timer. Score high!</p>
-    
-    <button id="start">🚀 Start Quiz</button>
-    
-    <div id="quiz-container" style="display: none;">
-      <div class="timer-container">
-        <span class="timer">00:30</span>
-      </div>
-      
-      <div class="progress-container">
-        <div class="progress-bar"></div>
-      </div>
-      
-      <div class="score-display">
-        Score: <span id="score">0</span>
-      </div>
-      
-      <div class="question" id="question"></div>
-      
-      <div id="options"></div>
-      
-      <button id="next" style="display: none;">Next Question →</button>
-      <button id="restart" style="display: none;">🔄 Play Again</button>
+    <div class="mode-toggle">
+      <label class="switch">
+        <input type="checkbox" id="modeSwitch" />
+        <span class="slider round">
+          <span class="sun">☀️</span>
+          <span class="moon">🌙</span>
+        </span>
+      </label>
+      <span id="modeText">Light Mode</span>
     </div>
-  </div>
+
+    <div class="container">
+      <h1>🎯 Welcome to the Ultimate Quiz Challenge!</h1>
+      <p class="subtext">Test your knowledge. Beat the timer. Score high!</p>
+      
+      <button id="start">🚀 Start Quiz</button>
+      
+      <div id="quiz-container" style="display: none;">
+        <div class="timer-container">
+          <span class="timer">00:30</span>
+        </div>
+        
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+        </div>
+        
+        <div class="score-display">
+          Score: <span id="score">0</span>
+        </div>
+        
+        <div class="question" id="question"></div>
+        
+        <div id="options"></div>
+        
+        <button id="next" style="display: none;">Next Question →</button>
+        <button id="restart" style="display: none;">🔄 Play Again</button>
+      </div>
+    </div>
 
   <script src="main.js"></script>
   <script>
@@ -73,6 +81,15 @@
         body.classList.toggle('light-mode', !isDark);
         modeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+
+      document.getElementById("nav-logout")?.addEventListener("click", () => {
+      localStorage.removeItem("quizUser");
+      localStorage.removeItem("score");
+      localStorage.removeItem("total");
+      localStorage.removeItem("quizTime");
+      localStorage.removeItem("quizDate");
+      window.location.href = "login.html"; // or "signup.html"
       });
     });
   </script>
