@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Results</title>
   <link rel="stylesheet" href="style.css" />
+  
 </head>
 <body class="light-mode">
   <!-- Mode Toggle -->
@@ -32,8 +33,8 @@
     <p id="quizDate"></p>
     <div class="button-row">
       <button id="restart">🔁 Restart Quiz</button>
+      <button id="reviewBtn">📝 Review Answers</button> <!-- New Button for "Review" -->
       <button id="leaderboardBtn">🏆 View Leaderboard</button>
-     
     </div>
     <button id="logoutBtn">🚪 Logout</button>
   </div>
@@ -59,6 +60,23 @@
         modeText.textContent = isDark ? "Dark Mode" : "Light Mode";
         localStorage.setItem("theme", isDark ? "dark" : "light");
       });
+
+      // *** (Review Page Task) ***
+      // Builds quiz history for review.html using userAnswers + original questions
+      fetch("questions.json")
+        .then(res => res.json())
+        .then((questions) => {
+          const userAnswers = JSON.parse(localStorage.getItem("userAnswers") || "[]");
+
+          const quizHistory = questions.slice(0, userAnswers.length).map((q, i) => ({
+            question: q.question,
+            correctAnswer: q.answer,
+            userAnswer: userAnswers[i]
+          }));
+
+          localStorage.setItem("quizHistory", JSON.stringify(quizHistory));
+
+        })
 
       // Show Results
       const user = localStorage.getItem("quizUser");
@@ -89,6 +107,12 @@
       document.getElementById("leaderboardBtn")?.addEventListener("click", () => {
         window.location.href = "leaderboard.html";
       });
+
+      // Go to review.html when "Review Answers" is clicked
+      document.getElementById("reviewBtn")?.addEventListener("click", () => {
+        window.location.href = "review.html";
+      });
+
       // Logout
     document.getElementById("logoutBtn")?.addEventListener("click", () => {
       localStorage.removeItem("quizUser");
