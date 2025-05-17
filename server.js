@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
-console.log("MONGODB_URI:", process.env.MONGODB_URI);
 
 
 const app = express();
@@ -15,7 +14,7 @@ let db;
 // Connect to MongoDB and start server only after success
 client.connect()
   .then(() => {
-    db = client.db('myQuizApp'); // ✅ your actual DB name
+    db = client.db('myQuizApp'); 
     console.log("✅ Connected to MongoDB");
   })
   .catch(err => {

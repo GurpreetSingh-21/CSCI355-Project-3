@@ -61,38 +61,38 @@
         localStorage.setItem("theme", isDark ? "dark" : "light");
       });
 
-      // *** (Review Page Task) ***
-      // Builds quiz history for review.html using userAnswers + original questions
       fetch("questions.json")
-        .then(res => res.json())
-        .then((questions) => {
-          const userAnswers = JSON.parse(localStorage.getItem("userAnswers") || "[]");
-
-          const quizHistory = questions.slice(0, userAnswers.length).map((q, i) => ({
-            question: q.question,
-            correctAnswer: q.answer,
-            userAnswer: userAnswers[i]
-          }));
-
-          localStorage.setItem("quizHistory", JSON.stringify(quizHistory));
-
-        })
+      .then(res => res.json())
+      .then((questions) => {
+        const userAnswers = JSON.parse(localStorage.getItem("userAnswers") || "[]");
+        if (!Array.isArray(userAnswers) || !userAnswers.length) return;
+    
+        const quizHistory = questions.slice(0, userAnswers.length).map((q, i) => ({
+          question: q.question,
+          correctAnswer: q.answer,
+          userAnswer: userAnswers[i]
+        }));
+    
+        localStorage.setItem("quizHistory", JSON.stringify(quizHistory));
+      })
+      .catch(err => {
+        console.error("Failed to load quiz questions for review:", err);
+      });
 
       // Show Results
       const user = localStorage.getItem("quizUser");
-      const score = parseInt(localStorage.getItem("score"), 10);
+      const finalScore = parseInt(localStorage.getItem("score"), 10);
       const total = parseInt(localStorage.getItem("total"), 10);
       const time = parseInt(localStorage.getItem("quizTime") || 0, 10);
       const date = localStorage.getItem("quizDate");
 
-      if (!user || isNaN(score) || isNaN(total)) {
+      if (!user || isNaN(finalScore) || isNaN(total)) {
         document.querySelector(".container").innerHTML = "<p>⚠️ No quiz data found. Please take the quiz first.</p>";
         return;
       }
-
       document.getElementById("playerGreeting").textContent = `Well done, ${user}!`;
-      document.getElementById("score").textContent = `Your Score: ${score}/${total}`;
-      document.getElementById("accuracy").textContent = `Accuracy: ${Math.round((score / total) * 100)}%`;
+      document.getElementById("score").textContent = `Your Score: ${finalScore}/${total}`;
+      document.getElementById("accuracy").textContent = `Accuracy: ${Math.round((finalScore / total) * 100)}%`;
       document.getElementById("timeTaken").textContent = `Time Taken: ${Math.floor(time / 1000)} seconds`;
       document.getElementById("quizDate").textContent = `Completed On: ${new Date(date).toLocaleString()}`;
 
@@ -101,6 +101,8 @@
         localStorage.removeItem("total");
         localStorage.removeItem("quizTime");
         localStorage.removeItem("quizDate");
+        localStorage.removeItem("quizCompleted");
+        localStorage.removeItem("userAnswers");
         window.location.href = "index.html";
       });
 

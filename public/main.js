@@ -13,19 +13,35 @@ if (
 ) {
   document.addEventListener("DOMContentLoaded", () => {
     const user = localStorage.getItem("quizUser");
+    const quizCompleted = localStorage.getItem("quizCompleted");
+    const storedScore = localStorage.getItem("score");
+    const storedTotal = localStorage.getItem("total");
+
     if (!user) {
       window.location.href = "login.html";
       return;
     }
 
+    if (
+      quizCompleted === "true" &&
+      storedScore !== null &&
+      storedTotal !== null
+    ) {
+      window.location.href = "results.html";
+      return;
+    }
+
     const startBtn = document.getElementById("start");
-
-    document.querySelector("h1")?.classList.add("animate-entrance");
-    document.querySelector(".subtext")?.classList.add("animate-entrance-delay");
-
     if (startBtn) {
       startBtn.classList.add("pulse-animation");
       startBtn.addEventListener("click", () => {
+        localStorage.removeItem("quizCompleted");
+        localStorage.removeItem("score");
+        localStorage.removeItem("total");
+        localStorage.removeItem("quizTime");
+        localStorage.removeItem("quizDate");
+        localStorage.removeItem("userAnswers");
+
         startBtn.classList.add("zoom-out");
         document.querySelector(".container")?.classList.add("fade-out");
         setTimeout(() => {
@@ -38,14 +54,12 @@ if (
   });
 }
 
-
-// dark mode
+// ========== DARK MODE ==========
 document.addEventListener("DOMContentLoaded", () => {
   const switchToggle = document.getElementById("modeSwitch");
   const body = document.body;
   const modeText = document.getElementById("modeText");
 
-  // Set saved theme on load
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
     body.classList.add("dark-mode");
@@ -53,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (switchToggle) switchToggle.checked = true;
   }
 
-  // Toggle on change
   if (switchToggle) {
     switchToggle.addEventListener("change", () => {
       const isDark = body.classList.toggle("dark-mode");
@@ -67,25 +80,20 @@ document.addEventListener("DOMContentLoaded", () => {
 if (window.location.pathname.includes("quiz.html")) {
   document.addEventListener("DOMContentLoaded", () => {
     quizStartTime = Date.now();
-
     const playerName = localStorage.getItem("quizUser");
-    const nameSpan = document.getElementById("playerName");
-    if (nameSpan) nameSpan.textContent = playerName || "Guest";
 
-    const scoreDisplay = document.getElementById("liveScore");
-    if (scoreDisplay) scoreDisplay.textContent = score;
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn?.addEventListener("click", () => {
-      localStorage.removeItem("quizUser");
-      localStorage.removeItem("score");
-      localStorage.removeItem("total");
+    if (!playerName) {
       window.location.href = "login.html";
-    });
+      return;
+    }
+
+    document.getElementById("playerName").textContent = playerName;
+    document.getElementById("liveScore").textContent = score;
 
     createAnimatedBackground();
     addProgressBar();
     addTimer();
+
     document.querySelector(".container")?.classList.add("slide-in");
 
     fetch("questions.json")
@@ -95,6 +103,21 @@ if (window.location.pathname.includes("quiz.html")) {
         showQuestion();
         startTimer();
       });
+
+    // Store user answers for review
+    localStorage.setItem("userAnswers", JSON.stringify([]));
+    document.querySelectorAll(".choice").forEach((button) => {
+      button.addEventListener("click", () => {
+        let answers = JSON.parse(localStorage.getItem("userAnswers")) || [];
+        answers.push(button.id);
+        localStorage.setItem("userAnswers", JSON.stringify(answers));
+      });
+    });
+  });
+
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "login.html";
   });
 
   function showQuestion() {
@@ -105,18 +128,7 @@ if (window.location.pathname.includes("quiz.html")) {
     clearInterval(timer);
     timeLeft = 30;
     startTimer();
-
     updateProgress(numberOfQuestions, 10);
-
-    const buttons = document.querySelectorAll(".choice");
-    buttons.forEach(btn => {
-      btn.disabled = false;
-      btn.classList.remove("correct", "incorrect");
-      btn.style.opacity = "0";
-      btn.style.transform = "translateY(20px)";
-    });
-
-    if (!question) return;
 
     const questionEl = document.getElementById("question");
     questionEl.innerHTML = `${numberOfQuestions}. ${question.question}`;
@@ -128,11 +140,13 @@ if (window.location.pathname.includes("quiz.html")) {
       questionEl.style.transition = "all 0.5s ease";
     }, 100);
 
-    ["A", "B", "C", "D"].forEach(id => {
-      document.getElementById(id).textContent = question[id];
-    });
-
-    buttons.forEach((btn, i) => {
+    ["A", "B", "C", "D"].forEach((id, i) => {
+      const btn = document.getElementById(id);
+      btn.textContent = question[id];
+      btn.disabled = false;
+      btn.classList.remove("correct", "incorrect");
+      btn.style.opacity = "0";
+      btn.style.transform = "translateY(20px)";
       setTimeout(() => {
         btn.style.opacity = "1";
         btn.style.transform = "translateY(0)";
@@ -143,35 +157,11 @@ if (window.location.pathname.includes("quiz.html")) {
     document.getElementById("next").style.display = "none";
   }
 
-  ["A", "B", "C", "D"].forEach(option => {
-    document.getElementById(option)?.addEventListener("click", () => checkAnswer(option, randomIndex));
+  ["A", "B", "C", "D"].forEach((option) => {
+    document.getElementById(option)?.addEventListener("click", () => {
+      checkAnswer(option, randomIndex);
+    });
   });
-
-  function checkAnswer(selected, index) {
-    const question = questions[index];
-    const buttons = document.querySelectorAll(".choice");
-    clearInterval(timer);
-
-    buttons.forEach(btn => btn.disabled = true);
-
-    if (selected === question.answer) {
-      const correctBtn = document.getElementById(selected);
-      correctBtn.classList.add("correct", "pop-animation");
-      score++;
-      document.getElementById("liveScore").textContent = score;
-      animateScoreChange();
-      createConfetti?.(20, correctBtn);
-    } else {
-      document.getElementById(selected).classList.add("incorrect", "shake-animation");
-      setTimeout(() => {
-        document.getElementById(question.answer).classList.add("correct", "pulse-once");
-      }, 100);
-    }
-
-    const nextBtn = document.getElementById("next");
-    nextBtn.style.display = "inline";
-    nextBtn.classList.add("fade-in");
-  }
 
   document.getElementById("next")?.addEventListener("click", () => {
     if (numberOfQuestions < 10) {
@@ -187,74 +177,99 @@ if (window.location.pathname.includes("quiz.html")) {
       localStorage.setItem("total", numberOfQuestions);
       localStorage.setItem("quizTime", quizEndTime - quizStartTime);
       localStorage.setItem("quizDate", new Date().toISOString());
+      localStorage.setItem("quizCompleted", "true");
 
-      fetch('/submit-score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetch("/submit-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: localStorage.getItem("quizUser"),
-          score: score
+          score: score,
+        }),
+      })
+        .then(() => {
+          document.querySelector(".container").classList.add("fade-out");
+          setTimeout(() => {
+            window.location.href = "results.html";
+          }, 500);
         })
-      }).then(() => {
-        document.querySelector(".container").classList.add("fade-out");
-        setTimeout(() => {
-          window.location.href = "results.html";
-        }, 500);
-      }).catch((err) => {
-        console.error("Failed to submit score:", err);
-        document.querySelector(".container").classList.add("fade-out");
-        setTimeout(() => {
-          window.location.href = "results.html";
-        }, 500);
-      });
+        .catch(() => {
+          document.querySelector(".container").classList.add("fade-out");
+          setTimeout(() => {
+            window.location.href = "results.html";
+          }, 500);
+        });
     }
   });
+
+  function checkAnswer(selected, index) {
+    const question = questions[index];
+    const buttons = document.querySelectorAll(".choice");
+    clearInterval(timer);
+
+    buttons.forEach((btn) => (btn.disabled = true));
+
+    if (selected === question.answer) {
+      const correctBtn = document.getElementById(selected);
+      correctBtn.classList.add("correct", "pop-animation");
+      score++;
+      document.getElementById("liveScore").textContent = score;
+      animateScoreChange();
+      createConfetti?.(20, correctBtn);
+    } else {
+      document.getElementById(selected).classList.add("incorrect", "shake-animation");
+      setTimeout(() => {
+        document.getElementById(question.answer).classList.add("correct", "pulse-once");
+      }, 100);
+    }
+
+    document.getElementById("next").style.display = "inline";
+  }
 }
 
 // ========== RESULTS PAGE ==========
 if (window.location.pathname.includes("results.html")) {
   document.addEventListener("DOMContentLoaded", () => {
-    const scoreElement = document.getElementById("score");
-    const restartBtn = document.getElementById("restart");
-
     const user = localStorage.getItem("quizUser");
-    let score = parseInt(localStorage.getItem("score"), 10);
-    const total = parseInt(localStorage.getItem("total"), 10);
-    const time = parseInt(localStorage.getItem("quizTime") || 0, 10);
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const score = parseInt(localStorage.getItem("score"));
+    const total = parseInt(localStorage.getItem("total"));
+    const time = parseInt(localStorage.getItem("quizTime") || 0);
     const date = localStorage.getItem("quizDate");
+
+    if (isNaN(score) || isNaN(total)) {
+      document.querySelector(".container").innerHTML = "<p>⚠️ No quiz data found. Please take the quiz first.</p>";
+      return;
+    }
 
     createAnimatedBackground(true);
     document.querySelector(".container").classList.add("scale-in");
-
-    document.getElementById("playerGreeting").textContent = `Well done, ${user || 'Guest'}!`;
-    animateCounter(scoreElement, 0, score, 1500, `Your Score: ${score}/${total}`);
+    document.getElementById("playerGreeting").textContent = `Well done, ${user}!`;
+    animateCounter(document.getElementById("score"), 0, score, 1500, `Your Score: ${score}/${total}`);
     document.getElementById("accuracy").textContent = `Accuracy: ${Math.round((score / total) * 100)}%`;
     document.getElementById("timeTaken").textContent = `Time Taken: ${Math.floor(time / 1000)} seconds`;
+    document.getElementById("quizDate").textContent = `Completed On: ${new Date(date).toLocaleString()}`;
 
-    if (date) {
-      const formatted = new Date(date).toLocaleString();
-      document.getElementById("quizDate").textContent = `Completed On: ${formatted}`;
-    }
-
-    const message = document.createElement("p");
-    message.className = "result-message fade-in-delay";
-    if ((score / total) >= 0.8) message.textContent = "🎯 Excellent work! You're a quiz master!";
-    else if ((score / total) >= 0.6) message.textContent = "🌟 Great job! You really know your stuff!";
-    else if ((score / total) >= 0.4) message.textContent = "📘 Keep practicing and you'll improve in no time!";
-    else message.textContent = "💪 Don't give up! Try again and keep learning!";
-    scoreElement.parentNode.insertBefore(message, scoreElement.nextSibling);
-
-    restartBtn?.classList.add("pulse-animation");
-    restartBtn?.addEventListener("click", () => {
+    document.getElementById("restart").addEventListener("click", () => {
       localStorage.removeItem("score");
       localStorage.removeItem("total");
       localStorage.removeItem("quizTime");
       localStorage.removeItem("quizDate");
+      localStorage.removeItem("quizCompleted");
+      localStorage.removeItem("userAnswers");
       window.location.href = "index.html";
+    });
+
+    document.getElementById("logoutBtn")?.addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "login.html";
     });
   });
 }
-
 // =================== HELPER FUNCTIONS ===================
 function createAnimatedBackground(isResultPage = false) {
   document.querySelectorAll(".animated-blob, .blob").forEach(el => el.remove());
@@ -398,62 +413,62 @@ function createConfetti(count = 100, sourceEl = null) {
     ).onfinish = () => confetti.remove();
   }
 
-    function createBlobs() {
-      const animatedBg = document.querySelector('.animated-bg');
+  function createBlobs() {
+    const animatedBg = document.querySelector('.animated-bg');
 
-      // Clear any existing blobs
-      animatedBg.innerHTML = '';
+    // Clear any existing blobs
+    animatedBg.innerHTML = '';
 
-      // Create blobs
-      const colors = ['#00c9a7', '#00d4ff', '#4caf50', '#f1c40f'];
-      const blobCount = 5;
+    // Create blobs
+    const colors = ['#00c9a7', '#00d4ff', '#4caf50', '#f1c40f'];
+    const blobCount = 5;
 
-      for (let i = 0; i < blobCount; i++) {
-        const blob = document.createElement('div');
-        blob.className = 'blob';
+    for (let i = 0; i < blobCount; i++) {
+      const blob = document.createElement('div');
+      blob.className = 'blob';
 
-        // Random size between 200-400px
-        const size = Math.random() * 200 + 200;
+      // Random size between 200-400px
+      const size = Math.random() * 200 + 200;
 
-        // Random position
-        const left = Math.random() * 100;
-        const top = Math.random() * 100;
+      // Random position
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
 
-        // Random color from our palette
-        const color = colors[Math.floor(Math.random() * colors.length)];
+      // Random color from our palette
+      const color = colors[Math.floor(Math.random() * colors.length)];
 
-        // Set styles
-        blob.style.width = `${size}px`;
-        blob.style.height = `${size}px`;
-        blob.style.left = `${left}%`;
-        blob.style.top = `${top}%`;
-        blob.style.backgroundColor = color;
+      // Set styles
+      blob.style.width = `${size}px`;
+      blob.style.height = `${size}px`;
+      blob.style.left = `${left}%`;
+      blob.style.top = `${top}%`;
+      blob.style.backgroundColor = color;
 
-        animatedBg.appendChild(blob);
-      }
-
-      // Animate blobs
-      moveBlobs();
+      animatedBg.appendChild(blob);
     }
 
-    function moveBlobs() {
-      const blobs = document.querySelectorAll('.blob');
-
-      blobs.forEach(blob => {
-        // Random new position
-        const newLeft = Math.random() * 100;
-        const newTop = Math.random() * 100;
-
-        // Apply new position with transition
-        blob.style.left = `${newLeft}%`;
-        blob.style.top = `${newTop}%`;
-      });
-
-      // Move blobs every 3 seconds
-      setTimeout(moveBlobs, 3000);
-    }
-
-    // Call this function when the DOM is loaded
-    document.addEventListener('DOMContentLoaded', createBlobs);
-
+    // Animate blobs
+    moveBlobs();
   }
+
+  function moveBlobs() {
+    const blobs = document.querySelectorAll('.blob');
+
+    blobs.forEach(blob => {
+      // Random new position
+      const newLeft = Math.random() * 100;
+      const newTop = Math.random() * 100;
+
+      // Apply new position with transition
+      blob.style.left = `${newLeft}%`;
+      blob.style.top = `${newTop}%`;
+    });
+
+    // Move blobs every 3 seconds
+    setTimeout(moveBlobs, 3000);
+  }
+
+  // Call this function when the DOM is loaded
+  document.addEventListener('DOMContentLoaded', createBlobs);
+
+}
