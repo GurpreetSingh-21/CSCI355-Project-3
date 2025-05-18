@@ -70,10 +70,10 @@ Run this command in the project folder to install all dependencies:
 
 ## 👥 Team Members
 
-- Oake Soe -	Frontend UI + Styling
-- Mozie Najee - 	Quiz Logic + Animations
-- Gurpreet Singh	- Server Setup + Auth Flow + Confetti
-- Prashanna Bhandari	- Results Page  + Timer
+- Oake Soe -	Frontend UI + API Call
+- Mozie Najee - 	Results Page + Review Answers
+- Gurpreet Singh	- Connect Database + Styling
+- Prashanna Bhandari	- Progress Bar  + Timer
 <br/>
 
 ## 📌 Notes

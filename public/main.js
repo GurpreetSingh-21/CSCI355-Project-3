@@ -6,6 +6,13 @@ let timeLeft = 30;
 let timer;
 let quizStartTime = 0;
 
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    // If the page was loaded from bfcache (back/forward cache), reload it
+    window.location.reload();
+  }
+});
+
 // ========== INDEX PAGE ==========
 if (
   window.location.pathname === "/" ||
@@ -13,41 +20,19 @@ if (
 ) {
   document.addEventListener("DOMContentLoaded", () => {
     const user = localStorage.getItem("quizUser");
-    const quizCompleted = localStorage.getItem("quizCompleted");
-    const storedScore = localStorage.getItem("score");
-    const storedTotal = localStorage.getItem("total");
-
     if (!user) {
       window.location.href = "login.html";
       return;
     }
 
-    // Check if quiz is already completed
-    if (
-      quizCompleted === "true" &&
-      storedScore !== null &&
-      storedTotal !== null
-    ) {
-      window.location.href = "results.html";
-      return;
-    }
+    const startBtn = document.getElementById("start");
 
-    // Add animations to title elements
     document.querySelector("h1")?.classList.add("animate-entrance");
     document.querySelector(".subtext")?.classList.add("animate-entrance-delay");
 
-    const startBtn = document.getElementById("start");
     if (startBtn) {
       startBtn.classList.add("pulse-animation");
       startBtn.addEventListener("click", () => {
-        // Clear previous quiz data
-        localStorage.removeItem("quizCompleted");
-        localStorage.removeItem("score");
-        localStorage.removeItem("total");
-        localStorage.removeItem("quizTime");
-        localStorage.removeItem("quizDate");
-        localStorage.removeItem("userAnswers");
-
         startBtn.classList.add("zoom-out");
         document.querySelector(".container")?.classList.add("fade-out");
         setTimeout(() => {
@@ -60,12 +45,14 @@ if (
   });
 }
 
-// ========== DARK MODE ==========
+
+// dark mode
 document.addEventListener("DOMContentLoaded", () => {
   const switchToggle = document.getElementById("modeSwitch");
   const body = document.body;
   const modeText = document.getElementById("modeText");
 
+  // Set saved theme on load
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
     body.classList.add("dark-mode");
@@ -73,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (switchToggle) switchToggle.checked = true;
   }
 
+  // Toggle on change
   if (switchToggle) {
     switchToggle.addEventListener("change", () => {
       const isDark = body.classList.toggle("dark-mode");
@@ -86,31 +74,33 @@ document.addEventListener("DOMContentLoaded", () => {
 if (window.location.pathname.includes("quiz.html")) {
   document.addEventListener("DOMContentLoaded", () => {
     quizStartTime = Date.now();
-    
     const playerName = localStorage.getItem("quizUser");
+
     if (!playerName) {
       window.location.href = "login.html";
       return;
     }
 
-    // Initialize UI elements
-    addTimerAndProgressRow();
-    const nameSpan = document.getElementById("playerName");
-    if (nameSpan) nameSpan.textContent = playerName;
-
-    const scoreDisplay = document.getElementById("liveScore");
-    if (scoreDisplay) scoreDisplay.textContent = score;
+    document.getElementById("playerName").textContent = playerName;
+    document.getElementById("liveScore").textContent = score;
 
     createAnimatedBackground();
+    addProgressBar();
+    addTimer();
+
     document.querySelector(".container")?.classList.add("slide-in");
 
-    // Set up logout button
-    document.getElementById("logoutBtn")?.addEventListener("click", () => {
-      localStorage.clear();
-      window.location.href = "login.html";
-    });
+    axios.get("/quiz")  // Replace with actual API URL
+      .then((response) => {
+        questions = response.data;  // The data should be an array of questions
+        showQuestion();
+        startTimer();
+      })
+      .catch((error) => {
+        console.error("Error fetching questions:", error);
+      });
 
-    // Initialize user answers array for review
+    // Store user answers for review
     localStorage.setItem("userAnswers", JSON.stringify([]));
     document.querySelectorAll(".choice").forEach((button) => {
       button.addEventListener("click", () => {
@@ -119,15 +109,11 @@ if (window.location.pathname.includes("quiz.html")) {
         localStorage.setItem("userAnswers", JSON.stringify(answers));
       });
     });
+  });
 
-    // Load questions
-    fetch("questions.json")
-      .then((res) => res.json())
-      .then((data) => {
-        questions = data;
-        showQuestion();
-        startTimer();
-      });
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "login.html";
   });
 
   function showQuestion() {
@@ -140,16 +126,6 @@ if (window.location.pathname.includes("quiz.html")) {
     startTimer();
     updateProgress(numberOfQuestions, 10);
 
-    const buttons = document.querySelectorAll(".choice");
-    buttons.forEach(btn => {
-      btn.disabled = false;
-      btn.classList.remove("correct", "incorrect");
-      btn.style.opacity = "0";
-      btn.style.transform = "translateY(20px)";
-    });
-
-    if (!question) return;
-
     const questionEl = document.getElementById("question");
     questionEl.innerHTML = `${numberOfQuestions}. ${question.question}`;
     questionEl.style.opacity = "0";
@@ -160,9 +136,29 @@ if (window.location.pathname.includes("quiz.html")) {
       questionEl.style.transition = "all 0.5s ease";
     }, 100);
 
+    // Prepare all choices
+    const allChoices = [
+      decodeHTML(question.correct_answer),
+      ...question.incorrect_answers.map(decodeHTML),
+    ];
+
+    // Log all choices
+    console.log("Choices before shuffle: ", allChoices);
+
+    // Shuffle choices to randomize positions
+    const shuffledChoices = allChoices.sort(() => Math.random() - 0.5);
+
+    // Log shuffled choices
+    console.log("Shuffled choices: ", shuffledChoices);
+
+    // Loop through all the answer options (A, B, C, D)
     ["A", "B", "C", "D"].forEach((id, i) => {
       const btn = document.getElementById(id);
-      btn.textContent = question[id];
+      btn.textContent = shuffledChoices[i];  // Set the shuffled answer
+      btn.disabled = false;
+      btn.classList.remove("correct", "incorrect");
+      btn.style.opacity = "0";
+      btn.style.transform = "translateY(20px)";
       setTimeout(() => {
         btn.style.opacity = "1";
         btn.style.transform = "translateY(0)";
@@ -171,6 +167,12 @@ if (window.location.pathname.includes("quiz.html")) {
     });
 
     document.getElementById("next").style.display = "none";
+  }
+
+  function decodeHTML(html) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
   }
 
   ["A", "B", "C", "D"].forEach((option) => {
@@ -209,8 +211,7 @@ if (window.location.pathname.includes("quiz.html")) {
             window.location.href = "results.html";
           }, 500);
         })
-        .catch((err) => {
-          console.error("Failed to submit score:", err);
+        .catch(() => {
           document.querySelector(".container").classList.add("fade-out");
           setTimeout(() => {
             window.location.href = "results.html";
@@ -219,88 +220,80 @@ if (window.location.pathname.includes("quiz.html")) {
     }
   });
 
-  function checkAnswer(selected, index) {
+    function checkAnswer(selectedOptionId, index) {
     const question = questions[index];
     const buttons = document.querySelectorAll(".choice");
     clearInterval(timer);
 
     buttons.forEach((btn) => (btn.disabled = true));
 
-    if (selected === question.answer) {
-      const correctBtn = document.getElementById(selected);
-      correctBtn.classList.add("correct", "pop-animation");
+    const selectedBtn = document.getElementById(selectedOptionId);
+
+    // Match based on decoded values
+    const correctAnswerText = decodeHTML(question.correct_answer);
+    const selectedText = selectedBtn.textContent;
+
+    if (selectedText === correctAnswerText) {
+      selectedBtn.classList.add("correct", "pop-animation");
       score++;
       document.getElementById("liveScore").textContent = score;
       animateScoreChange();
-      createConfetti?.(20, correctBtn);
+      createConfetti?.(20, selectedBtn);
     } else {
-      document.getElementById(selected).classList.add("incorrect", "shake-animation");
-      setTimeout(() => {
-        document.getElementById(question.answer).classList.add("correct", "pulse-once");
-      }, 100);
+      selectedBtn.classList.add("incorrect", "shake-animation");
+
+      // Find and highlight the correct answer button
+      buttons.forEach((btn) => {
+        if (btn.textContent === correctAnswerText) {
+          btn.classList.add("correct", "pulse-once");
+        }
+      });
     }
 
-    const nextBtn = document.getElementById("next");
-    nextBtn.style.display = "inline";
-    nextBtn.classList.add("fade-in");
+    document.getElementById("next").style.display = "inline";
   }
 }
 
 // ========== RESULTS PAGE ==========
 if (window.location.pathname.includes("results.html")) {
   document.addEventListener("DOMContentLoaded", () => {
+    const scoreElement = document.getElementById("score");
+    const restartBtn = document.getElementById("restart");
+
     const user = localStorage.getItem("quizUser");
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
-
-    const score = parseInt(localStorage.getItem("score"));
-    const total = parseInt(localStorage.getItem("total"));
-    const time = parseInt(localStorage.getItem("quizTime") || 0);
+    let score = parseInt(localStorage.getItem("score"), 10);
+    const total = parseInt(localStorage.getItem("total"), 10);
+    const time = parseInt(localStorage.getItem("quizTime") || 0, 10);
     const date = localStorage.getItem("quizDate");
-
-    if (isNaN(score) || isNaN(total)) {
-      document.querySelector(".container").innerHTML = "<p>⚠️ No quiz data found. Please take the quiz first.</p>";
-      return;
-    }
 
     createAnimatedBackground(true);
     document.querySelector(".container").classList.add("scale-in");
-    document.getElementById("playerGreeting").textContent = `Well done, ${user}!`;
-    animateCounter(document.getElementById("score"), 0, score, 1500, `Your Score: ${score}/${total}`);
+
+    document.getElementById("playerGreeting").textContent = `Well done, ${user || 'Guest'}!`;
+    animateCounter(scoreElement, 0, score, 1500, `Your Score: ${score}/${total}`);
     document.getElementById("accuracy").textContent = `Accuracy: ${Math.round((score / total) * 100)}%`;
     document.getElementById("timeTaken").textContent = `Time Taken: ${Math.floor(time / 1000)} seconds`;
-    
+
     if (date) {
       const formatted = new Date(date).toLocaleString();
       document.getElementById("quizDate").textContent = `Completed On: ${formatted}`;
     }
 
-    // Add personalized message based on score
     const message = document.createElement("p");
     message.className = "result-message fade-in-delay";
     if ((score / total) >= 0.8) message.textContent = "🎯 Excellent work! You're a quiz master!";
     else if ((score / total) >= 0.6) message.textContent = "🌟 Great job! You really know your stuff!";
     else if ((score / total) >= 0.4) message.textContent = "📘 Keep practicing and you'll improve in no time!";
     else message.textContent = "💪 Don't give up! Try again and keep learning!";
-    
-    const scoreElement = document.getElementById("score");
     scoreElement.parentNode.insertBefore(message, scoreElement.nextSibling);
 
-    document.getElementById("restart").addEventListener("click", () => {
+    restartBtn?.classList.add("pulse-animation");
+    restartBtn?.addEventListener("click", () => {
       localStorage.removeItem("score");
       localStorage.removeItem("total");
       localStorage.removeItem("quizTime");
       localStorage.removeItem("quizDate");
-      localStorage.removeItem("quizCompleted");
-      localStorage.removeItem("userAnswers");
       window.location.href = "index.html";
-    });
-
-    document.getElementById("logoutBtn")?.addEventListener("click", () => {
-      localStorage.clear();
-      window.location.href = "login.html";
     });
   });
 }
@@ -329,40 +322,32 @@ function createAnimatedBackground(isResultPage = false) {
   }
 }
 
-function addTimerAndProgressRow() {
-  if (!document.querySelector(".top-bar")) {
-    const topBar = document.createElement("div");
-    topBar.className = "top-bar";
-
-    // Time
-    const timeWrapper = document.createElement("div");
-    timeWrapper.className = "timer-wrapper";
-    timeWrapper.innerHTML = `<span class="label">Time:</span> <span class="timer">30</span>`;
-
-    // Progress
-    const progressWrapper = document.createElement("div");
-    progressWrapper.className = "progress-wrapper";
-    progressWrapper.innerHTML = `
-  <div class="progress-bar-container">
-    <div class="progress-bar">
-      <span class="progress-counter">Question 0 of 10</span>
-    </div>
-  </div>
-`;
-
-    topBar.appendChild(timeWrapper);
-    topBar.appendChild(progressWrapper);
-
-    document.querySelector(".container").prepend(topBar);
-  }
-}
-
 function updateProgress(current, total) {
   const bar = document.querySelector(".progress-bar");
   if (bar) bar.style.width = `${(current / total) * 100}%`;
+}
 
-  const counter = document.querySelector(".progress-counter");
-  if (counter) counter.textContent = `Question ${current} of ${total}`;
+function addProgressBar() {
+  if (!document.querySelector(".progress-container")) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "progress-container";
+    const bar = document.createElement("div");
+    bar.className = "progress-bar";
+    wrapper.appendChild(bar);
+    document.querySelector(".container").prepend(wrapper);
+  }
+}
+
+function addTimer() {
+  if (!document.querySelector(".timer-container")) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "timer-container";
+    const el = document.createElement("div");
+    el.className = "timer";
+    el.textContent = "30";
+    wrapper.appendChild(el);
+    document.querySelector(".container").prepend(wrapper);
+  }
 }
 
 function startTimer() {
@@ -455,63 +440,63 @@ function createConfetti(count = 100, sourceEl = null) {
       }
     ).onfinish = () => confetti.remove();
   }
-}
 
-function createBlobs() {
-  const animatedBg = document.querySelector('.animated-bg');
-  if (!animatedBg) return;
+    function createBlobs() {
+      const animatedBg = document.querySelector('.animated-bg');
 
-  // Clear any existing blobs
-  animatedBg.innerHTML = '';
+      // Clear any existing blobs
+      animatedBg.innerHTML = '';
 
-  // Create blobs
-  const colors = ['#00c9a7', '#00d4ff', '#4caf50', '#f1c40f'];
-  const blobCount = 5;
+      // Create blobs
+      const colors = ['#00c9a7', '#00d4ff', '#4caf50', '#f1c40f'];
+      const blobCount = 5;
 
-  for (let i = 0; i < blobCount; i++) {
-    const blob = document.createElement('div');
-    blob.className = 'blob';
+      for (let i = 0; i < blobCount; i++) {
+        const blob = document.createElement('div');
+        blob.className = 'blob';
 
-    // Random size between 200-400px
-    const size = Math.random() * 200 + 200;
+        // Random size between 200-400px
+        const size = Math.random() * 200 + 200;
 
-    // Random position
-    const left = Math.random() * 100;
-    const top = Math.random() * 100;
+        // Random position
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
 
-    // Random color from our palette
-    const color = colors[Math.floor(Math.random() * colors.length)];
+        // Random color from our palette
+        const color = colors[Math.floor(Math.random() * colors.length)];
 
-    // Set styles
-    blob.style.width = `${size}px`;
-    blob.style.height = `${size}px`;
-    blob.style.left = `${left}%`;
-    blob.style.top = `${top}%`;
-    blob.style.backgroundColor = color;
+        // Set styles
+        blob.style.width = `${size}px`;
+        blob.style.height = `${size}px`;
+        blob.style.left = `${left}%`;
+        blob.style.top = `${top}%`;
+        blob.style.backgroundColor = color;
 
-    animatedBg.appendChild(blob);
+        animatedBg.appendChild(blob);
+      }
+
+      // Animate blobs
+      moveBlobs();
+    }
+
+    function moveBlobs() {
+      const blobs = document.querySelectorAll('.blob');
+
+      blobs.forEach(blob => {
+        // Random new position
+        const newLeft = Math.random() * 100;
+        const newTop = Math.random() * 100;
+
+        // Apply new position with transition
+        blob.style.left = `${newLeft}%`;
+        blob.style.top = `${newTop}%`;
+      });
+
+      // Move blobs every 3 seconds
+      setTimeout(moveBlobs, 3000);
+    }
+
+    // Call this function when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', createBlobs);
+
   }
-
-  // Animate blobs
-  moveBlobs();
-}
-
-function moveBlobs() {
-  const blobs = document.querySelectorAll('.blob');
-
-  blobs.forEach(blob => {
-    // Random new position
-    const newLeft = Math.random() * 100;
-    const newTop = Math.random() * 100;
-
-    // Apply new position with transition
-    blob.style.left = `${newLeft}%`;
-    blob.style.top = `${newTop}%`;
-  });
-
-  // Move blobs every 3 seconds
-  setTimeout(moveBlobs, 3000);
-}
-
-// Call this function when the DOM is loaded
-document.addEventListener('DOMContentLoaded', createBlobs);
