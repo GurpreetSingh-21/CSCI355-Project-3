@@ -22,6 +22,7 @@ if (
       return;
     }
 
+    // Check if quiz is already completed
     if (
       quizCompleted === "true" &&
       storedScore !== null &&
@@ -31,10 +32,15 @@ if (
       return;
     }
 
+    // Add animations to title elements
+    document.querySelector("h1")?.classList.add("animate-entrance");
+    document.querySelector(".subtext")?.classList.add("animate-entrance-delay");
+
     const startBtn = document.getElementById("start");
     if (startBtn) {
       startBtn.classList.add("pulse-animation");
       startBtn.addEventListener("click", () => {
+        // Clear previous quiz data
         localStorage.removeItem("quizCompleted");
         localStorage.removeItem("score");
         localStorage.removeItem("total");
@@ -80,31 +86,31 @@ document.addEventListener("DOMContentLoaded", () => {
 if (window.location.pathname.includes("quiz.html")) {
   document.addEventListener("DOMContentLoaded", () => {
     quizStartTime = Date.now();
+    
     const playerName = localStorage.getItem("quizUser");
-
     if (!playerName) {
       window.location.href = "login.html";
       return;
     }
 
-    document.getElementById("playerName").textContent = playerName;
-    document.getElementById("liveScore").textContent = score;
+    // Initialize UI elements
+    addTimerAndProgressRow();
+    const nameSpan = document.getElementById("playerName");
+    if (nameSpan) nameSpan.textContent = playerName;
+
+    const scoreDisplay = document.getElementById("liveScore");
+    if (scoreDisplay) scoreDisplay.textContent = score;
 
     createAnimatedBackground();
-    addProgressBar();
-    addTimer();
-
     document.querySelector(".container")?.classList.add("slide-in");
 
-    fetch("questions.json")
-      .then((res) => res.json())
-      .then((data) => {
-        questions = data;
-        showQuestion();
-        startTimer();
-      });
+    // Set up logout button
+    document.getElementById("logoutBtn")?.addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
 
-    // Store user answers for review
+    // Initialize user answers array for review
     localStorage.setItem("userAnswers", JSON.stringify([]));
     document.querySelectorAll(".choice").forEach((button) => {
       button.addEventListener("click", () => {
@@ -113,11 +119,15 @@ if (window.location.pathname.includes("quiz.html")) {
         localStorage.setItem("userAnswers", JSON.stringify(answers));
       });
     });
-  });
 
-  document.getElementById("logoutBtn")?.addEventListener("click", () => {
-    localStorage.clear();
-    window.location.href = "login.html";
+    // Load questions
+    fetch("questions.json")
+      .then((res) => res.json())
+      .then((data) => {
+        questions = data;
+        showQuestion();
+        startTimer();
+      });
   });
 
   function showQuestion() {
@@ -129,6 +139,16 @@ if (window.location.pathname.includes("quiz.html")) {
     timeLeft = 30;
     startTimer();
     updateProgress(numberOfQuestions, 10);
+
+    const buttons = document.querySelectorAll(".choice");
+    buttons.forEach(btn => {
+      btn.disabled = false;
+      btn.classList.remove("correct", "incorrect");
+      btn.style.opacity = "0";
+      btn.style.transform = "translateY(20px)";
+    });
+
+    if (!question) return;
 
     const questionEl = document.getElementById("question");
     questionEl.innerHTML = `${numberOfQuestions}. ${question.question}`;
@@ -143,10 +163,6 @@ if (window.location.pathname.includes("quiz.html")) {
     ["A", "B", "C", "D"].forEach((id, i) => {
       const btn = document.getElementById(id);
       btn.textContent = question[id];
-      btn.disabled = false;
-      btn.classList.remove("correct", "incorrect");
-      btn.style.opacity = "0";
-      btn.style.transform = "translateY(20px)";
       setTimeout(() => {
         btn.style.opacity = "1";
         btn.style.transform = "translateY(0)";
@@ -193,7 +209,8 @@ if (window.location.pathname.includes("quiz.html")) {
             window.location.href = "results.html";
           }, 500);
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error("Failed to submit score:", err);
           document.querySelector(".container").classList.add("fade-out");
           setTimeout(() => {
             window.location.href = "results.html";
@@ -223,7 +240,9 @@ if (window.location.pathname.includes("quiz.html")) {
       }, 100);
     }
 
-    document.getElementById("next").style.display = "inline";
+    const nextBtn = document.getElementById("next");
+    nextBtn.style.display = "inline";
+    nextBtn.classList.add("fade-in");
   }
 }
 
@@ -252,7 +271,22 @@ if (window.location.pathname.includes("results.html")) {
     animateCounter(document.getElementById("score"), 0, score, 1500, `Your Score: ${score}/${total}`);
     document.getElementById("accuracy").textContent = `Accuracy: ${Math.round((score / total) * 100)}%`;
     document.getElementById("timeTaken").textContent = `Time Taken: ${Math.floor(time / 1000)} seconds`;
-    document.getElementById("quizDate").textContent = `Completed On: ${new Date(date).toLocaleString()}`;
+    
+    if (date) {
+      const formatted = new Date(date).toLocaleString();
+      document.getElementById("quizDate").textContent = `Completed On: ${formatted}`;
+    }
+
+    // Add personalized message based on score
+    const message = document.createElement("p");
+    message.className = "result-message fade-in-delay";
+    if ((score / total) >= 0.8) message.textContent = "🎯 Excellent work! You're a quiz master!";
+    else if ((score / total) >= 0.6) message.textContent = "🌟 Great job! You really know your stuff!";
+    else if ((score / total) >= 0.4) message.textContent = "📘 Keep practicing and you'll improve in no time!";
+    else message.textContent = "💪 Don't give up! Try again and keep learning!";
+    
+    const scoreElement = document.getElementById("score");
+    scoreElement.parentNode.insertBefore(message, scoreElement.nextSibling);
 
     document.getElementById("restart").addEventListener("click", () => {
       localStorage.removeItem("score");
@@ -270,6 +304,7 @@ if (window.location.pathname.includes("results.html")) {
     });
   });
 }
+
 // =================== HELPER FUNCTIONS ===================
 function createAnimatedBackground(isResultPage = false) {
   document.querySelectorAll(".animated-blob, .blob").forEach(el => el.remove());
@@ -294,32 +329,40 @@ function createAnimatedBackground(isResultPage = false) {
   }
 }
 
+function addTimerAndProgressRow() {
+  if (!document.querySelector(".top-bar")) {
+    const topBar = document.createElement("div");
+    topBar.className = "top-bar";
+
+    // Time
+    const timeWrapper = document.createElement("div");
+    timeWrapper.className = "timer-wrapper";
+    timeWrapper.innerHTML = `<span class="label">Time:</span> <span class="timer">30</span>`;
+
+    // Progress
+    const progressWrapper = document.createElement("div");
+    progressWrapper.className = "progress-wrapper";
+    progressWrapper.innerHTML = `
+  <div class="progress-bar-container">
+    <div class="progress-bar">
+      <span class="progress-counter">Question 0 of 10</span>
+    </div>
+  </div>
+`;
+
+    topBar.appendChild(timeWrapper);
+    topBar.appendChild(progressWrapper);
+
+    document.querySelector(".container").prepend(topBar);
+  }
+}
+
 function updateProgress(current, total) {
   const bar = document.querySelector(".progress-bar");
   if (bar) bar.style.width = `${(current / total) * 100}%`;
-}
 
-function addProgressBar() {
-  if (!document.querySelector(".progress-container")) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "progress-container";
-    const bar = document.createElement("div");
-    bar.className = "progress-bar";
-    wrapper.appendChild(bar);
-    document.querySelector(".container").prepend(wrapper);
-  }
-}
-
-function addTimer() {
-  if (!document.querySelector(".timer-container")) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "timer-container";
-    const el = document.createElement("div");
-    el.className = "timer";
-    el.textContent = "30";
-    wrapper.appendChild(el);
-    document.querySelector(".container").prepend(wrapper);
-  }
+  const counter = document.querySelector(".progress-counter");
+  if (counter) counter.textContent = `Question ${current} of ${total}`;
 }
 
 function startTimer() {
@@ -412,63 +455,63 @@ function createConfetti(count = 100, sourceEl = null) {
       }
     ).onfinish = () => confetti.remove();
   }
-
-  function createBlobs() {
-    const animatedBg = document.querySelector('.animated-bg');
-
-    // Clear any existing blobs
-    animatedBg.innerHTML = '';
-
-    // Create blobs
-    const colors = ['#00c9a7', '#00d4ff', '#4caf50', '#f1c40f'];
-    const blobCount = 5;
-
-    for (let i = 0; i < blobCount; i++) {
-      const blob = document.createElement('div');
-      blob.className = 'blob';
-
-      // Random size between 200-400px
-      const size = Math.random() * 200 + 200;
-
-      // Random position
-      const left = Math.random() * 100;
-      const top = Math.random() * 100;
-
-      // Random color from our palette
-      const color = colors[Math.floor(Math.random() * colors.length)];
-
-      // Set styles
-      blob.style.width = `${size}px`;
-      blob.style.height = `${size}px`;
-      blob.style.left = `${left}%`;
-      blob.style.top = `${top}%`;
-      blob.style.backgroundColor = color;
-
-      animatedBg.appendChild(blob);
-    }
-
-    // Animate blobs
-    moveBlobs();
-  }
-
-  function moveBlobs() {
-    const blobs = document.querySelectorAll('.blob');
-
-    blobs.forEach(blob => {
-      // Random new position
-      const newLeft = Math.random() * 100;
-      const newTop = Math.random() * 100;
-
-      // Apply new position with transition
-      blob.style.left = `${newLeft}%`;
-      blob.style.top = `${newTop}%`;
-    });
-
-    // Move blobs every 3 seconds
-    setTimeout(moveBlobs, 3000);
-  }
-
-  // Call this function when the DOM is loaded
-  document.addEventListener('DOMContentLoaded', createBlobs);
-
 }
+
+function createBlobs() {
+  const animatedBg = document.querySelector('.animated-bg');
+  if (!animatedBg) return;
+
+  // Clear any existing blobs
+  animatedBg.innerHTML = '';
+
+  // Create blobs
+  const colors = ['#00c9a7', '#00d4ff', '#4caf50', '#f1c40f'];
+  const blobCount = 5;
+
+  for (let i = 0; i < blobCount; i++) {
+    const blob = document.createElement('div');
+    blob.className = 'blob';
+
+    // Random size between 200-400px
+    const size = Math.random() * 200 + 200;
+
+    // Random position
+    const left = Math.random() * 100;
+    const top = Math.random() * 100;
+
+    // Random color from our palette
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    // Set styles
+    blob.style.width = `${size}px`;
+    blob.style.height = `${size}px`;
+    blob.style.left = `${left}%`;
+    blob.style.top = `${top}%`;
+    blob.style.backgroundColor = color;
+
+    animatedBg.appendChild(blob);
+  }
+
+  // Animate blobs
+  moveBlobs();
+}
+
+function moveBlobs() {
+  const blobs = document.querySelectorAll('.blob');
+
+  blobs.forEach(blob => {
+    // Random new position
+    const newLeft = Math.random() * 100;
+    const newTop = Math.random() * 100;
+
+    // Apply new position with transition
+    blob.style.left = `${newLeft}%`;
+    blob.style.top = `${newTop}%`;
+  });
+
+  // Move blobs every 3 seconds
+  setTimeout(moveBlobs, 3000);
+}
+
+// Call this function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', createBlobs);
