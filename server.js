@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
+const axios = require('axios');
 require('dotenv').config();
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -89,17 +89,17 @@ app.post('/signin', async (req, res) => {
   }
 });
 
-// Serve quiz questions
-app.get('/questions.json', (req, res) => {
-  const filePath = path.join(__dirname, 'questions.json');
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      res.status(500).send('Error loading questions');
-      return;
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.send(data);
-  });
+// Fetch quiz questions from the Trivia API
+app.get('/quiz', async (req, res) => {
+  try {
+    const response = await axios.get('https://opentdb.com/api.php?amount=10&type=multiple');
+    const questions = response.data.results;
+
+    res.json(questions); // Send questions to the frontend
+  } catch (error) {
+    console.error('❌ Error fetching questions from Trivia API:', error);
+    res.status(500).json({ message: 'Error fetching questions from Trivia API' });
+  }
 });
 
 // Submit score to MongoDB
@@ -134,7 +134,7 @@ app.get('/leaderboard', async (req, res) => {
       .sort({ score: -1, timestamp: 1 }) // Highest score first, then earliest
       .limit(10)
       .toArray();
-      console.log("🎯 Fetched scores:", topScores);
+    console.log("🎯 Fetched scores:", topScores);
     res.json(topScores);
   } catch (err) {
     console.error('❌ Leaderboard fetch error:', err);
