@@ -1,11 +1,13 @@
-# 🧠 CSCI355 Project 3 – Quiz App
+# 🧠 CSCI355 Project 3 – Full-Stack Quiz App
 
-A dynamic web-based quiz app built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**.
+A dynamic, full-featured quiz application built using **HTML**, **CSS**, **JavaScript**, and **Node.js with Express**, with **MongoDB** for data storage. The app uses the **Open Trivia DB API** to fetch quiz questions, including login/signup, leaderboard, and review page.
 
 ---
 
-## Live Link
+## 🔗 Live Deployment
 https://csci355-project-2.onrender.com/
+
+---
 
 
 ## 🚀 How to Run the Project
@@ -29,43 +31,76 @@ Run this command in the project folder to install all dependencies:
 
 
 ## ✨ Features
+🔑 User Authentication
 
-- ✅ Randomized 10 questions from questions.json
+- Signup & login functionality
 
-- ⏱️ 30-second timer per question (auto-submits on timeout)
+- User session saved in localStorage
 
-- ✅ ❌ Answer feedback with green/red animations
+🧠 Dynamic Quiz (10 questions)
 
-- 🔒 Locked options after selection to prevent changes
+- Fetched from Open Trivia DB
 
-- 📊 Progress bar showing quiz completion
+- Each question has a 30-second timer (auto-submit on timeout)
 
-- 🌙☀️ Dark & Light mode with theme memory
+- Randomized question order with category support
 
-- 🎯 Results summary page with:
+✅ ❌ Answer Feedback
 
-- ✅ Correct & incorrect count
+- Green for correct, red for incorrect
 
-- ⏱️ Time taken
+- Locked options once selected
 
-- 🎉 Confetti celebration for high scores
+🧾 Results Page
 
-- 📱 Responsive design for all devices
+- Summary of correct/incorrect answers
 
-- 🎞️ Smooth UI animations: pop-ups, transitions, effects
+- Time taken and score displayed
+
+- Confetti celebration for high scores
+
+📈 Leaderboard
+
+- Top 10 global scores
+
+- Ranks the current user
+
+🔄 Review Page
+
+- Shows each question, user’s answer, and correct answer
+
+- Fully synced with localStorage
+
+🌙☀️ Dark/Light Mode
+
+- Toggle switch with smooth UI transitions
+
+- Mode preference saved across sessions
+
+📱 Responsive Design
+
+- Fully optimized for mobile, tablet, and desktop
+
+🎞️ Animations
+
+- Smooth fade-ins, pulses, progress transitions
+
+
 
 <br/>
 
-## 📁 Tech Stack
+📁 Tech Stack
 - Frontend: HTML, CSS, JavaScript
 
 - Backend: Node.js, Express.js
 
-- Data Source: JSON (questions.json)
+- Database: MongoDB Atlas
 
-- Storage: localStorage (name, score, session)
+- API: Open Trivia DB API
 
-- Hosting: Render
+- Auth & Storage: localStorage (session), MongoDB (users & scores)
+
+- Deployment: Render
 <br/>
 
 ## 👥 Team Members
@@ -76,9 +111,13 @@ Run this command in the project folder to install all dependencies:
 - Prashanna Bhandari	- Progress Bar  + Timer
 <br/>
 
-## 📌 Notes
-- Quiz data is fetched dynamically via fetch('/questions.json')
+##📌 Implementation Notes
+- All quiz data is fetched from the Open Trivia API on quiz start
 
-- Session state is saved in localStorage per user
+- Answers selected by the user are saved in localStorage for result/review
 
-- Restart button resets data and UI animations
+- Server handles signup/login, stores scores and users in MongoDB
+
+- Leaderboard and profile data is queried from the database
+
+- Confetti and UI animations improve user experience
