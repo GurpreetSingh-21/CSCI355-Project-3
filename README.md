@@ -5,7 +5,7 @@ A dynamic, full-featured quiz application built using **HTML**, **CSS**, **JavaS
 ---
 
 ## 🔗 Live Deployment
-https://csci355-project-2.onrender.com/
+- https://quiz-app-5pjv.onrender.com
 
 ---
 
