@@ -4,35 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign Up | Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="navbar.css" />
   <link rel="stylesheet" href="auth.css" />
 </head>
 <body class="light-mode">
 
-  <!-- Mode Toggle -->
-  <div class="mode-toggle">
-    <label class="switch">
-      <input type="checkbox" id="modeSwitch" />
-      <span class="slider round">
-        <span class="sun">☀️</span>
-        <span class="moon">🌙</span>
-      </span>
-    </label>
-    <span id="modeText">Light Mode</span>
-  </div>
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="./index.html" id="nav-home">Home</a></li>
+      <li><a href="./leaderboard.html" id="nav-leaderboard">Leaderboard</a></li>
+      <li><a href="./login.html" id="nav-logout">Logout</a></li>
+    </ul>
+    <div class="mode-toggle">
+      <label class="switch">
+        <input type="checkbox" id="modeSwitch" />
+        <span class="slider round">
+          <span class="sun">☀️</span>
+          <span class="moon">🌙</span>
+        </span>
+      </label>
+      <span id="modeText">Light Mode</span>
+    </div>
+  </nav>
 
-  <!-- Signup Container -->
   <div class="container">
     <h1 id="formTitle">📝 Sign Up</h1>
 
     <div style="margin-bottom: 15px;">
-      <a href="/login.html" id="loginTab" class="tab-btn">Login</a>
+      <a href="./login.html" id="loginTab" class="tab-btn">Login</a>
       <button id="signupTab" class="tab-btn active">Sign Up</button>
     </div>
 
     <p class="subtext" id="formSubtext">Create an account by entering your name.</p>
 
     <form id="signupForm">
-      <input id="username" class="login-input" type="text" name="username" placeholder="Enter your name..." required />
+      <input
+        id="username"
+        class="login-input"
+        type="text"
+        name="username"
+        placeholder="Enter your name..."
+        required
+      />
       <br />
       <button type="button" id="loginBtn">Sign Up</button>
     </form>
@@ -43,41 +57,33 @@
     const switchToggle = document.getElementById('modeSwitch');
     const body = document.body;
     const modeText = document.getElementById('modeText');
-  
-    // Apply theme immediately before anything else
+
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       body.classList.add('dark-mode');
-      body.classList.remove('light-mode');
       modeText.textContent = 'Dark Mode';
       switchToggle.checked = true;
     } else {
       body.classList.add('light-mode');
-      body.classList.remove('dark-mode');
       modeText.textContent = 'Light Mode';
       switchToggle.checked = false;
     }
-  
-    // Toggle on click
+
     switchToggle.addEventListener('change', () => {
-      const isDark = switchToggle.checked;
-  
-      if (isDark) {
+      if (switchToggle.checked) {
         body.classList.add('dark-mode');
         body.classList.remove('light-mode');
         modeText.textContent = 'Dark Mode';
         localStorage.setItem('theme', 'dark');
       } else {
-        body.classList.remove('dark-mode');
         body.classList.add('light-mode');
+        body.classList.remove('dark-mode');
         modeText.textContent = 'Light Mode';
         localStorage.setItem('theme', 'light');
       }
     });
   </script>
 
-  <!-- Link to shared login.js for signup logic -->
   <script src="login.js"></script>
-
 </body>
 </html>

@@ -1,0 +1,186 @@
+:root {
+  --accent-light: #00c9a7;
+  --accent-dark:  #00e0c6;
+  --off-light:   #bdc3c7;
+  --off-dark:    #566573;
+}
+
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  z-index: 1000;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+/* LIGHT/DARK NAVBAR BACKGROUND */
+.light-mode .navbar {
+  background-color: rgba(255,255,255,0.75);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.dark-mode .navbar {
+  background-color: rgba(30,30,40,0.75);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* LINKS */
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+}
+.nav-links li a {
+  position: relative;
+  padding-bottom: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+  line-height: 1;
+}
+.light-mode .nav-links li a { color: #334155; }
+.dark-mode  .nav-links li a { color: #cbd5e1; }
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-light);
+  transition: width 0.3s;
+}
+.nav-links li a:hover::after { width: 100%; }
+.nav-links li a:hover       { color: var(--accent-light); }
+.dark-mode .nav-links li a:hover      { color: var(--accent-dark); }
+.dark-mode .nav-links li a::after     { background-color: var(--accent-dark); }
+
+/* MODE TOGGLE */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#modeText {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1;
+  color: inherit;
+}
+
+/* SWITCH TRACK & KNOB */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch .slider {
+  position: absolute;
+  inset: 0;
+  background-color: var(--off-light);
+  border-radius: 26px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+.dark-mode .switch .slider {
+  background-color: var(--off-dark);
+}
+.switch .slider::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  bottom: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* SUN & MOON ICONS */
+.switch .sun,
+.switch .moon {
+  pointer-events: none;
+  font-size: 0.75rem;
+}
+.switch .sun { opacity: 1; color: #f39c12; }
+.switch .moon { opacity: 0.5; }
+
+/* CHECKED STATES */
+.switch input:checked + .slider {
+  background-color: var(--accent-light);
+}
+.switch input:checked + .slider::before {
+  transform: translateX(24px);
+}
+.switch input:checked + .slider .sun {
+  opacity: 0.5;
+}
+.switch input:checked + .slider .moon {
+  opacity: 1;
+  color: #f1c40f;
+}
+
+/* GLOBAL PAGE THEME */
+.light-mode {
+  background: linear-gradient(120deg, #e9f5f9, #d4eefc);
+  color: #2c3e50;
+}
+.dark-mode {
+  background: linear-gradient(120deg, #232526, #414345);
+  color: #ecf0f1;
+}
+.light-mode .container {
+  background-color: rgba(255,255,255,0.85);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+.dark-mode .container {
+  background-color: rgba(44,62,80,0.85);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .navbar           { padding: 12px 20px; }
+  .nav-links        { gap: 20px; }
+  .nav-links li a   { font-size: 0.9rem; }
+  .mode-toggle      { gap: 6px; }
+  #modeText         { font-size: 0.8rem; }
+  .switch           { width: 44px; height: 22px; }
+  .slider::before   { width: 18px; height: 18px; left: 2px; bottom: 2px; }
+}
+@media (max-width: 480px) {
+  .navbar           { padding: 10px 15px; }
+  .nav-links        { gap: 15px; }
+  .nav-links li a   { font-size: 0.85rem; padding-bottom: 4px; }
+  .mode-toggle      { gap: 4px; }
+  #modeText         { font-size: 0.75rem; }
+  .switch           { width: 40px; height: 20px; }
+  .slider::before   { width: 16px; height: 16px; left: 2px; bottom: 2px; transform: none; }
+  .switch input:checked + .slider::before {
+    transform: translateX(20px);
+  }
+}

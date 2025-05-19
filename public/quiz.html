@@ -2,91 +2,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz | Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="navbar.css" />
+  <link rel="stylesheet" href="quiz.css" />
 </head>
 <body>
-
-  <!-- Mode Toggle -->
-  <div class="mode-toggle">
-    <label class="switch">
-      <input type="checkbox" id="modeSwitch" />
-      <span class="slider round">
-        <span class="sun">☀️</span>
-        <span class="moon">🌙</span>
-      </span>
-    </label>
-    <span id="modeText">Light Mode</span>
-  </div>
-
-  <div class="container">
-    <div>
-      <h1 id="question">Question</h1>
-
-      <!-- Player info and live score -->
-      <p>👤 Player: <span id="playerName"> </span> | ✅ Correct: <span id="liveScore">0</span></p>
-
-      <div id="options">
-        <button class="choice" id="A">A</button>
-        <button class="choice" id="B">B</button>
-        <button class="choice" id="C">C</button>
-        <button class="choice" id="D">D</button>
-      </div>
-      <button id="next">Next Question</button>
+  <!-- ===== Navbar ===== -->
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="./index.html" id="nav-home">Home</a></li>
+      <li><a href="./leaderboard.html" id="nav-leaderboard">Leaderboard</a></li>
+      <li><a href="./login.html" id="logoutBtn">Logout</a></li>
+    </ul>
+    <div class="mode-toggle">
+      <label class="switch">
+        <input type="checkbox" id="modeSwitch" />
+        <span class="slider round">
+          <span class="sun">☀️</span>
+          <span class="moon">🌙</span>
+        </span>
+      </label>
+      <span id="modeText">Light Mode</span>
     </div>
+  </nav>
+
+  <!-- ===== Confetti & Blobs Containers ===== -->
+  <div id="confetti-wrapper"></div>
+  <div class="animated-bg"></div>
+
+  <!-- ===== Quiz Card ===== -->
+  <div class="container" id="quiz-page-container">
+    <!-- Progress bar (injected by main.js) -->
+    <!-- Timer (injected by main.js) -->
+
+    <!-- Question -->
+    <h1 id="question" role="status" aria-live="polite">Loading question...</h1>
+
+    <!-- Player / Score -->
+    <p>
+      👤 Player: <span id="playerName"></span>
+      &nbsp;|&nbsp; ✅ Correct: <span id="liveScore">0</span>
+    </p>
+
+    <!-- Answer Options -->
+    <div id="options">
+      <button class="choice" id="A" disabled>A</button>
+      <button class="choice" id="B" disabled>B</button>
+      <button class="choice" id="C" disabled>C</button>
+      <button class="choice" id="D" disabled>D</button>
+    </div>
+
+    <!-- Next Question Button -->
+    <button id="next" disabled>Next Question</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- ===== Script ===== -->
   <script src="main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const body = document.body;
-      const switchToggle = document.getElementById('modeSwitch');
-      const modeText = document.getElementById('modeText');
-  
-      // Apply saved theme or default to light
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        body.classList.add('dark-mode');
-        modeText.textContent = 'Dark Mode';
-        switchToggle.checked = true;
-      } else {
-        body.classList.add('light-mode');
-        modeText.textContent = 'Light Mode';
-        switchToggle.checked = false;
-      }
-  
-      // Toggle theme on switch change
-      switchToggle.addEventListener('change', () => {
-        const isDark = switchToggle.checked;
-        body.classList.toggle('dark-mode', isDark);
-        body.classList.toggle('light-mode', !isDark);
-        modeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      });
-    });
-  </script>
-
-  <!-- *** (Review.html page task) ***-->
-   <!-- Track which answer button the user clicks (A/B/C/D) and store in localStorage -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const answerButtons = document.querySelectorAll(".choice");
-
-    // Reset answers whe the quiz starts
-    localStorage.setItem("userAnswers", JSON.stringify([]));
-
-    // Listen for answer button clicks
-    answerButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        let answers = JSON.parse(localStorage.getItem("userAnswers")) || [];
-        answers.push(button.id); //Store A, B, C, or D dependding on what was clicked
-        localStorage.setItem("userAnswers", JSON.stringify(answers));
-        });
-      });
-    });
-  </script>
 </body>
 </html>

@@ -1,0 +1,229 @@
+/* quiz.css */
+
+/* 1. Theme variables */
+:root {
+  --radius: 12px;
+  --spacing: 1.2rem;
+  --transition: 0.3s ease;
+  --font: 'Inter', 'Roboto', sans-serif;
+
+  /* Light theme */
+  --bg: rgba(255,255,255,0.6);
+  --fg: #1a202c;
+  --muted: #4a5568;
+  --surface: #f7fafc;
+  --surface-hover: #edf2f7;
+  --border: rgba(0,0,0,0.05);
+  --accent: #00c9a7;
+  --accent-light: #00d4ff;
+  --correct: #48bb78;
+  --incorrect: #f56565;
+  --popup: #4caf50;
+}
+
+.dark-mode {
+  /* Dark theme overrides */
+  --bg: rgba(40,42,54,0.6);
+  --fg: #e2e8f0;
+  --muted: #a0aec0;
+  --surface: #2d3748;
+  --surface-hover: #4a5568;
+  --border: rgba(255,255,255,0.08);
+  --accent: #00e0c6;
+  --accent-light: #00c9a7;
+  --correct: #81c784;
+  --incorrect: #f56565;
+  --popup: #81c784;
+}
+
+/* 2. Box-sizing & base reset */
+html {
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+  padding: 0;
+  padding-top: 60px;            /* leave room for fixed navbar */
+  overflow-x: hidden;
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--fg);
+}
+
+/* 3. Navbar stays fixed */
+nav.navbar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* 4. Confetti & animated background */
+#confetti-wrapper {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 9999;
+}
+.animated-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: -1;
+}
+
+/* 5. Quiz container */
+#quiz-page-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  padding: 2rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+/* 6. Progress & Timer inside the card */
+#quiz-page-container .progress-container {
+  width: 100%;
+  height: 10px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: var(--spacing);
+}
+#quiz-page-container .progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transition: width 0.4s ease-out;
+}
+#quiz-page-container .timer-container {
+  font-size: 1.6em;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  color: var(--fg);
+  text-align: center;
+  margin-bottom: var(--spacing);
+  display: inline-block;
+}
+
+/* 7. Player / score line */
+#quiz-page-container > p:first-of-type {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+#liveScore {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* 8. Question */
+#question {
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 1.5rem 0;
+  min-height: 4rem;
+}
+
+/* 9. Options grid */
+#options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+#options button.choice {
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--spacing);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    transform 0.15s ease;
+}
+#options button.choice:hover:not(:disabled) {
+  background: var(--surface-hover);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+#options button.choice:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+#options button.choice.correct {
+  background: var(--correct);
+  color: #fff;
+  border-color: var(--correct);
+  transform: scale(1.05);
+}
+#options button.choice.incorrect {
+  background: var(--incorrect);
+  color: #fff;
+  border-color: var(--incorrect);
+  animation: shake 0.5s ease;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+/* 10. Next button */
+#next {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform var(--transition);
+}
+#next:hover {
+  transform: translateY(-2px);
+}
+
+/* 11. Score popup */
+.score-popup {
+  position: fixed;
+  top: 50%; left: 50%;
+  padding: 0.5rem 1rem;
+  background: rgba(255,255,255,0.8);
+  border-radius: var(--radius);
+  transform: translate(-50%, -50%) scale(0.5);
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--popup);
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 2000;
+}
+.score-popup.show {
+  opacity: 1;
+  transform: translate(-50%, -70%) scale(1.2);
+}
+
+/* 12. Responsive tweaks */
+@media (max-width: 600px) {
+  #options { grid-template-columns: 1fr; }
+  #question { font-size: 1.2rem; }
+  #quiz-page-container .timer-container { font-size: 1.4em; }
+  #next { width: 100%; text-align: center; }
+}

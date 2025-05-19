@@ -1,0 +1,149 @@
+/* Leaderboard Page Styles (leaderboard.css) */
+
+/* Push content below the navbar */
+.container#leaderboard-container {
+  max-width: 600px;
+  padding: 20px;
+  margin: 90px auto 20px; /* top = navbar height (60px) + 30px spacing */
+  border-radius: 16px;
+}
+
+/* Backgrounds */
+.light-mode .container#leaderboard-container {
+  background-color: rgba(255,255,255,0.92);
+}
+.dark-mode  .container#leaderboard-container {
+  background-color: rgba(40,42,54,0.92);
+}
+
+/* Title */
+.leaderboard-title {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+}
+.trophy-icon {
+  margin-right: 8px;
+  font-size: 1.6rem;
+}
+
+/* Table */
+#leaderboardTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin-top: 16px;
+}
+
+#leaderboardTable thead th {
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 2px solid;
+}
+.light-mode #leaderboardTable thead th {
+  background-color: #00c9a7;
+  color: #fff;
+  border-bottom-color: #00a786;
+}
+.dark-mode  #leaderboardTable thead th {
+  background-color: #00a786;
+  color: #e0f2f1;
+  border-bottom-color: #00876c;
+}
+#leaderboardTable thead th:first-child  { border-top-left-radius: 6px; }
+#leaderboardTable thead th:last-child   { border-top-right-radius: 6px; }
+
+/* Rows */
+#leaderboardTable tbody tr {
+  background-color: transparent; /* we style each mode below */
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+}
+.light-mode #leaderboardTable tbody tr {
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.dark-mode  #leaderboardTable tbody tr {
+  background-color: #2c2f38;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+#leaderboardTable tbody tr:hover {
+  transform: translateY(-2px);
+}
+.light-mode #leaderboardTable tbody tr:hover {
+  background-color: #f2f4f6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.dark-mode  #leaderboardTable tbody tr:hover {
+  background-color: #353943;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Cells */
+#leaderboardTable td {
+  padding: 12px 16px;
+  font-size: 0. nine5rem;
+  vertical-align: middle;
+}
+.light-mode #leaderboardTable td { color: #34495e; }
+.dark-mode  #leaderboardTable td { color: #bdc3c7; }
+
+/* Rank column */
+#leaderboardTable td:first-child {
+  font-weight: 700;
+  width: 50px;
+  text-align: center;
+  font-size: 1rem;
+}
+.light-mode #leaderboardTable td:first-child { color: #00796b; }
+.dark-mode  #leaderboardTable td:first-child { color: #26a69a; }
+
+/* Username */
+#leaderboardTable td:nth-child(2) {
+  font-weight: 500;
+}
+
+/* Score */
+#leaderboardTable td:last-child {
+  font-weight: 600;
+  text-align: right;
+}
+.light-mode #leaderboardTable td:last-child { color: #16a085; }
+.dark-mode  #leaderboardTable td:last-child { color: #1abc9c; }
+
+/* Back Button */
+#backBtn {
+  display: block;
+  margin: 24px auto 0;
+  min-width: 160px;
+  padding: 10px 0;
+  background: linear-gradient(135deg, #00c9a7, #00b897);
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,201,167,0.25);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#backBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(0,201,167,0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container#leaderboard-container { padding: 16px; margin-top: 80px; }
+  .leaderboard-title { font-size: 1.4rem; margin-bottom: 16px; }
+  #leaderboardTable thead th,
+  #leaderboardTable td { padding: 10px 12px; font-size: 0.9rem; }
+  #backBtn { min-width: 140px; font-size: 0.9rem; }
+}
+@media (max-width: 480px) {
+  .container#leaderboard-container { padding: 12px; margin-top: 70px; }
+  .leaderboard-title { font-size: 1.2rem; }
+  #leaderboardTable thead th,
+  #leaderboardTable td { padding: 8px 10px; font-size: 0.8rem; }
+  #backBtn { width: 100%; max-width: 220px; }
+}

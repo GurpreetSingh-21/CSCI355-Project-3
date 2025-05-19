@@ -3,7 +3,9 @@ const path = require('path');
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
 const axios = require('axios');
+const session = require('express-session');
 require('dotenv').config();
+const { requireAuth } = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,7 +13,6 @@ const PORT = process.env.PORT || 3000;
 const client = new MongoClient(process.env.MONGODB_URI);
 let db;
 
-// Connect to MongoDB and start server only after success
 client.connect()
   .then(() => {
     db = client.db('myQuizApp'); 
@@ -19,56 +20,45 @@ client.connect()
   })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err);
-    process.exit(1); // ❌ Exit to avoid running with broken DB
+    process.exit(1);
   });
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'keyboard cat', // use env variable in prod
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // secure: true only with HTTPS
+}));
 
-// Home redirects to login
+// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Serve signup and login pages
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signup.html'));
 });
+
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// ✅ Signup route (JSON response)
-app.post('/signup', async (req, res) => {
-  const { username } = req.body;
-
-  if (!username) {
-    return res.status(400).json({ message: 'Username is required' });
-  }
-
-  try {
-    const usersCollection = db.collection('users');
-    const existingUser = await usersCollection.findOne({ username });
-
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    await usersCollection.insertOne({ username });
-    console.log(`🆕 New user signed up: ${username}`);
-    res.status(200).json({ message: 'Signup successful', redirect: 'login.html' });
-  } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ message: 'Server error' });
+// ✅ Session check for frontend JS
+app.get('/check-session', (req, res) => {
+  if (req.session.user) {
+    res.json({ loggedIn: true, username: req.session.user.username });
+  } else {
+    res.json({ loggedIn: false });
   }
 });
 
-// ✅ Login route (JSON response)
+// ✅ Login
 app.post('/signin', async (req, res) => {
   const { username } = req.body;
-
   if (!username) {
     return res.status(400).json({ message: 'Username is required' });
   }
@@ -76,44 +66,52 @@ app.post('/signin', async (req, res) => {
   try {
     const usersCollection = db.collection('users');
     const user = await usersCollection.findOne({ username });
-
     if (!user) {
       return res.status(401).json({ message: 'User not found. Please sign up.' });
     }
 
+    req.session.user = { username };
     console.log(`✅ User logged in: ${username}`);
-    res.status(200).json({ message: "Login successful", redirect: "index.html" });
+    res.status(200).json({ message: 'Login successful', redirect: 'index.html' });
   } catch (error) {
     console.error('Signin error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Fetch quiz questions from the Trivia API
-app.get('/quiz', async (req, res) => {
+// ✅ Logout
+app.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) return res.status(500).json({ message: "Logout error" });
+    res.redirect('/login');
+  });
+});
+
+// ✅ Protected quiz route
+app.get('/quiz', requireAuth, async (req, res) => {
   try {
     const response = await axios.get('https://opentdb.com/api.php?amount=10&type=multiple');
     const questions = response.data.results;
-
-    res.json(questions); // Send questions to the frontend
+    res.json(questions);
   } catch (error) {
-    console.error('❌ Error fetching questions from Trivia API:', error);
-    res.status(500).json({ message: 'Error fetching questions from Trivia API' });
+    console.error('❌ Error fetching quiz questions:', error);
+    res.status(500).json({ message: 'Failed to fetch questions' });
   }
 });
 
-// Submit score to MongoDB
-app.post('/submit-score', async (req, res) => {
-  const { name, score } = req.body;
+// ✅ Protected score submission
+app.post('/submit-score', requireAuth, async (req, res) => {
+  const { score } = req.body;
+  const username = req.session.user?.username;
 
-  if (!name || typeof score !== 'number') {
+  if (!username || typeof score !== 'number') {
     return res.status(400).json({ message: 'Invalid input' });
   }
 
   try {
     const scoresCollection = db.collection('scores');
     const entry = {
-      name,
+      name: username,
       score,
       timestamp: new Date()
     };
@@ -125,16 +123,14 @@ app.post('/submit-score', async (req, res) => {
   }
 });
 
-// Get leaderboard data
+// Leaderboard route (public is fine)
 app.get('/leaderboard', async (req, res) => {
   try {
     const scoresCollection = db.collection('scores');
-    const topScores = await scoresCollection
-      .find()
-      .sort({ score: -1, timestamp: 1 }) // Highest score first, then earliest
+    const topScores = await scoresCollection.find()
+      .sort({ score: -1, timestamp: 1 })
       .limit(10)
       .toArray();
-    console.log("🎯 Fetched scores:", topScores);
     res.json(topScores);
   } catch (err) {
     console.error('❌ Leaderboard fetch error:', err);
@@ -142,7 +138,6 @@ app.get('/leaderboard', async (req, res) => {
   }
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

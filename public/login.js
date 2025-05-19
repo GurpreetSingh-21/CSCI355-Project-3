@@ -6,35 +6,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginTab = document.getElementById("loginTab");
   const signupTab = document.getElementById("signupTab");
 
-  // 🔥 Dynamically set mode based on current page
   let mode = window.location.pathname.includes("signup") ? "signup" : "login";
 
-  // Set UI accordingly
   if (mode === "signup") {
     formTitle.textContent = "📝 Sign Up";
     formSubtext.textContent = "Create your account to start the quiz!";
     loginBtn.textContent = "Sign Up";
-    if (signupTab) signupTab.classList.add("active");
-    if (loginTab) loginTab.classList.remove("active");
+    signupTab?.classList.add("active");
+    loginTab?.classList.remove("active");
   } else {
     formTitle.textContent = "🔐 Login";
     formSubtext.textContent = "Welcome back! Enter your name to log in.";
     loginBtn.textContent = "Login";
-    if (loginTab) loginTab.classList.add("active");
-    if (signupTab) signupTab.classList.remove("active");
+    loginTab?.classList.add("active");
+    signupTab?.classList.remove("active");
   }
 
-  // Optional: handle tab clicks if both tabs exist
-  if (loginTab && signupTab) {
-    loginTab.addEventListener("click", () => {
-      window.location.href = "login.html";
-    });
-    signupTab.addEventListener("click", () => {
-      window.location.href = "signup.html";
-    });
-  }
+  loginTab?.addEventListener("click", () => {
+    window.location.href = "login.html";
+  });
+  signupTab?.addEventListener("click", () => {
+    window.location.href = "signup.html";
+  });
 
-  // Handle login/signup request
   loginBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     const username = usernameInput.value.trim();
@@ -58,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      localStorage.setItem("quizUser", username);
       window.location.href = result.redirect || "index.html";
 
     } catch (err) {
@@ -67,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // === Dark/Light Theme ===
+  // Theme toggle
   const switchToggle = document.getElementById('modeSwitch');
   const body = document.body;
   const modeText = document.getElementById('modeText');

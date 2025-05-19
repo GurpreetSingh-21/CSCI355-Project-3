@@ -1,104 +1,113 @@
-/* General body scroll and light mode background */
+/* Light and Dark Mode Body Styles */
 body.light-mode {
-  background: linear-gradient(to bottom right, #e0f7fa, #c8e6c9); /* soft blue/green gradient */
-  color: #333;
-  overflow-y: auto;
+  background: var(--bg, #f0f0f0);
+  color: var(--fg, #1a202c);
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', sans-serif;
+  overflow-y: auto;
 }
 
 body.dark-mode {
-  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-  color: #fff;
-  overflow-y: auto;
+  background: var(--bg, #1a1a1a);
+  color: var(--fg, #f0f0f0);
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', sans-serif;
+  overflow-y: auto;
 }
 
-/* Main container for review page */
+/* Main container */
 .container.results {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
+  max-width: 800px;
+  margin: 100px auto 40px;
+  padding: 30px 25px;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  max-height: 85vh;
 }
 
 body.dark-mode .container.results {
   background-color: rgba(30, 30, 30, 0.95);
 }
 
-/* Each question box */
+/* Each question block */
 .question-box {
-  background-color: #ffffff;
   padding: 20px;
-  border: 1px solid #ddd;
   border-radius: 12px;
   margin-bottom: 20px;
+  background-color: rgba(245, 245, 245, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 body.dark-mode .question-box {
-  background-color: #1e1e1e;
-  border: 1px solid #444;
+  background-color: #2c2f36;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Question text */
 .question-box h3 {
-  color: #00bcd4;
-  margin-bottom: 10px;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--accent, #00c9a7);
 }
 
-/* Answer styling */
+/* Answer styles */
 .correct {
-  color: #2e7d32;
-  font-weight: bold;
-  background-color: #66bb6a;
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin: 8px 0;
   display: inline-block;
+  font-weight: 600;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 8px;
+  background-color: rgba(76, 175, 80, 0.15);
+  color: #2e7d32;
 }
 
 .wrong {
-  color: #c62828;
-  font-weight: bold;
-  background-color: #ef9a9a;
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin: 8px 0;
   display: inline-block;
+  font-weight: 600;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 8px;
+  background-color: rgba(244, 67, 54, 0.15);
+  color: #c62828;
 }
 
-/* Back button */
+/* Back Button Style */
 #backBtn {
   display: block;
   margin: 30px auto 0;
-  padding: 12px 24px;
+  padding: 14px 28px;
   font-size: 1rem;
-  background-color: #00c9a7;
+  font-weight: 600;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00c9a7, #00b897);
   color: white;
   border: none;
-  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 201, 167, 0.2);
 }
 
 #backBtn:hover {
-  background-color: #009e82;
+  background: linear-gradient(135deg, #00d4ff, #00c9a7);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 15px rgba(0, 201, 167, 0.3);
 }
 
-/* Responsive */
+/* Responsive Adjustments */
 @media (max-width: 600px) {
   .container.results {
-    padding: 15px;
+    padding: 20px 15px;
+    margin-top: 80px;
   }
 
   .question-box {
     padding: 15px;
+  }
+
+  #backBtn {
+    width: 100%;
+    font-size: 0.95rem;
   }
 }

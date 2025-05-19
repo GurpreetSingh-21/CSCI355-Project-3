@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
+:root {
+  --primary: #00c9a7;
+  --secondary: #00d4ff;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --text-default: #333;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,246 +16,147 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-
-    transition: background-color 0.15s ease, color 0.15s ease;
-  
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e0f7fa, #bbdefb);
+  color: var(--text-default);
   overflow: hidden;
-  position: relative;
 }
 
 .container {
-  background-color: rgba(255, 255, 255, 0.9);
+  background: var(--bg-card);
+  -webkit-backdrop-filter: blur(20px);
   padding: 40px 30px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px var(--shadow);
   text-align: center;
-  z-index: 10;
-  max-width: 400px;
-  width: 90%;
+  width: 100%;
+  max-width: 380px;
 }
 
 h1 {
-  font-size: 26px;
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 20px;
-  background: linear-gradient(90deg, #00c9a7, #00d4ff);
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   color: transparent;
 }
 
-#formTitle ul{
-    text-decoration: none;
-}
-#formTitle li{
-   list-style: none;
-   text-decoration-line: none;
+.subtext {
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+  opacity: 0.8;
 }
 
-.subtext {
-  font-size: 15px;
-  color: #555;
-  margin-bottom: 25px;
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-default);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: var(--primary);
+  transition: width 0.3s, left 0.3s;
+}
+
+.tab-btn:hover::after,
+.tab-btn.active::after {
+  width: 80%;
+  left: 10%;
+}
+
+.tab-btn:hover {
+  color: var(--primary);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+}
+
+/* Ensure both tabs are white in dark mode */
+.dark-mode .tab-btn,
+.dark-mode a.tab-btn {
+  color: #fff;
 }
 
 .login-input {
   width: 100%;
-  padding: 14px;
-  margin-bottom: 20px;
-  border: 2px solid #00c9a7;
-  border-radius: 12px;
-  font-size: 15px;
+  padding: 12px 0;
+  margin-bottom: 25px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--primary);
+  font-size: 1rem;
+  color: var(--text-default);
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s;
+}
+
+.login-input::placeholder {
+  color: #999;
+  opacity: 1;
 }
 
 .login-input:focus {
-  border-color: #00d4ff;
+  border-bottom-color: var(--secondary);
 }
 
-button {
-  background: linear-gradient(135deg, #00c9a7, #00b897);
-  color: white;
+button[type="button"] {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
   border: none;
-  padding: 12px 25px;
-  border-radius: 12px;
-  font-size: 15px;
+  border-radius: 8px;
+  padding: 12px 0;
+  width: 100%;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  background-size: 200%;
+  background-position: left;
+  transition: background-position 0.5s, transform 0.2s;
 }
 
-button:hover {
-  background: linear-gradient(135deg, #00d4ff, #00c9a7);
-  transform: scale(1.05);
+button[type="button"]:hover {
+  background-position: right;
+  transform: translateY(-2px);
 }
 
-.tab-btn {
-  background-color: transparent;
-  border: 2px solid #00c9a7;
-  padding: 8px 18px;
-  margin: 0 5px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+button[type="button"]:active {
+  transform: translateY(0);
 }
 
-.tab-btn.active {
-  background-color: #00c9a7;
-  color: white;
-}
-
-.mode-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    line-height: 1;
+@media (max-width: 480px) {
+  .container {
+    padding: 30px 20px;
   }
-  
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
-    flex-shrink: 0;
+  h1 {
+    font-size: 1.6rem;
   }
-  
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  .subtext {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
   }
-  
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 5px;
-    font-size: 12px;
-    box-sizing: border-box;
+  .login-input {
+    margin-bottom: 20px;
   }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-    z-index: 2;
+  button[type="button"] {
+    padding: 10px 0;
+    font-size: 0.95rem;
   }
-  
-  input:checked + .slider {
-    background-color: #00c9a7;
-  }
-  
-  input:checked + .slider:before {
-    transform: translateX(30px);
-  }
-  
-  .sun, .moon {
-    font-size: 12px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #modeText {
-    display: flex;
-    align-items: center;
-    height: 30px;
-  }
-
-.animated-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  opacity: 0.4;
 }
-
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(40px);
-  transition: all 1s ease;
-  z-index: 1;
-}
-
-/* Light Mode */
-.light-mode {
-  background: linear-gradient(120deg, #e0f7fa, #bbdefb);
-  color: #333;
-}
-
-.light-mode .container {
-  background-color: rgba(255, 255, 255, 0.95);
-}
-
-.light-mode .login-input {
-  background-color: white;
-  color: #333;
-}
-
-/* Dark Mode */
-.dark-mode {
-  background: linear-gradient(120deg, #121212, #2c3e50);
-  color: #f5f5f5;
-}
-
-.dark-mode .container {
-  background-color: rgba(30, 30, 30, 0.95);
-}
-
-.dark-mode .login-input {
-  background-color: rgba(40, 40, 40, 0.9);
-  color: #f5f5f5;
-  border-color: #00c9a7;
-}
-
-.dark-mode .subtext {
-  color: #ccc;
-}
-
-.dark-mode .tab-btn {
-  border-color: #00c9a7;
-  color: white;
-}
-
-.dark-mode .tab-btn.active {
-  background-color: #00c9a7;
-  color: white;
-}
-
-a.tab-btn {
-    text-decoration: none;
-    color: inherit; /* Inherit text color from parent (matches the theme) */
-  }
-  
-  a.tab-btn:hover {
-    text-decoration: none;
-    color: inherit;
-  }
